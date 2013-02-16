@@ -92,14 +92,6 @@ function drawBoard() {
   }
 }
 
-// function rectCollide(rect1, rect2) {
-//   return ! (
-//     (rect1.bottom <= rect2.top) ||
-//     (rect1.top >= rect2.bottom) ||
-//     (rect1.left >= rect2.right) ||
-//     (rect1.right <= rect2.left)
-//   );
-// }
 
 // Generate sequence of n moves starting at (x, y) as an initial position
 function generateSequence(x, y, n) {
@@ -116,22 +108,6 @@ function generateSequence(x, y, n) {
 }
 
 function generateBoardRects() {
-  // var rects = [];
-
-  // for (var y = 0; y < board.length; y++) {
-  //   for (var x = 0; x < board[y].length; x++) {
-  //     if (board[y][x]) {
-  //       rects.push({
-  //         top: y * BLOCK_WIDTH,
-  //         bottom: y * BLOCK_WIDTH + BLOCK_WIDTH,
-  //         left: x * BLOCK_HEIGHT,
-  //         right: x * BLOCK_HEIGHT + BLOCK_WIDTH,
-  //         x: x,
-  //         y: y
-  //       });
-  //     }
-  //   }
-
   var rects = [];
 
   for (var y = 0; y < board.length; y++) {
@@ -142,35 +118,14 @@ function generateBoardRects() {
     }
   }
 
-
   return rects;
 }
 
 
 function drawPlayer(time, position) {
   ctx.fillStyle = PLAYER_STYLE;
-  // ctx.fillRect(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
   ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
 }
-
-// function collide(x, y) {
-//   var playerRect = {
-//     top: playerY,
-//     bottom: playerY + PLAYER_HEIGHT,
-//     left: playerX,
-//     right: playerX + PLAYER_WIDTH
-//   };
-
-//   for (var i = 0; i < boardRects.length; i++) {
-//     if (rectCollide(playerRect, boardRects[i])) {
-//       return {
-//         player: playerRect,
-//         collide: boardRects[i]
-//       };
-//     }
-//   }
-//   return false;
-// }
 
 function inputDirection(dir) {
   player.dir = dir;
