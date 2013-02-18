@@ -1,0 +1,25 @@
+Open the index.html file to play.
+
+Tested in current versions of Chrome, Safari, and Firefox. Internet Explorer 9
+also works with the exception of fullscreen support.
+
+
+
+
+Instructions
+
+Collect all red squares. Do not go offscreen.
+
+Controls
+
+Movement
+W, A, S, D
+Fullscreen
+F
+
+Planned Features
+
+The red squares will be dynamically continously generated and the game will be
+infinite. Score will be based on time. The camera will follow the needed
+sequence of blocks. If either the player goes off screen or misses a block, the
+game ends.
