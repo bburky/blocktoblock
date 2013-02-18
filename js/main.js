@@ -1,14 +1,5 @@
-var cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.exitFullscreen;
 
-var canvas = document.getElementById('canvas');
-
-var buffer = document.createElement("canvas");
-buffer.width = 1000;
-buffer.height = 1000;
-
-var canvasCtx = canvas.getContext('2d');
-var ctx = buffer.getContext('2d');
-
+// Constants
 var BLOCK_WIDTH = 50;
 var BLOCK_HEIGHT = 50;
 var BLOCK_STYLE = 'rgb(200,0,0)';
@@ -37,10 +28,24 @@ var DIRECTION = {
   left: 4
 };
 
+
+
+// Canvas and state variables
+
+// This is the visible on screen canvas
+var canvas = document.getElementById('canvas');
+var canvasCtx = canvas.getContext('2d');
+
+// Create a secont buffer to be blited onto the canvas
+var buffer = document.createElement("canvas");
+buffer.width = 1000;
+buffer.height = 1000;
+var ctx = buffer.getContext('2d');
+
 var fps;
 var lastUpdate;
-
 var started = false;
+// Player state data
 var player = {
   x: 4,
   y: 1,
@@ -49,12 +54,14 @@ var player = {
   dir: DIRECTION.none,
   dead: false
 };
+// Camera position state data
 var camera = {
   x: 0,
   y: 0,
   destX: 0,
   destY: 0
 };
+// Temporary board to generate boardRects
 var board = [
   [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -75,19 +82,12 @@ var board = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+// Actual board. A dictionary with coordinate keys
 var boardRects = generateBoardRects();
 
-function drawBoard() {
-  ctx.fillStyle = BLOCK_STYLE;
-  for (var y = 0; y < board.length; y++) {
-    for (var x = 0; x < board[y].length; x++) {
-      if (boardRects[[x,y]]) {
-        ctx.fillRect(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
-      }
-    }
-  }
-}
 
+
+// TODO: complete board generation
 // Generate sequence of n moves starting at (x, y) as an initial position
 function generateSequence(x, y, n) {
   var curX = x;
@@ -101,6 +101,7 @@ function generateSequence(x, y, n) {
   }
 }
 
+// Generate the actual board from the temporary array
 function generateBoardRects() {
   var rects = {};
 
@@ -115,31 +116,30 @@ function generateBoardRects() {
   return rects;
 }
 
-// Return true if in bounds of screen
-function boundsCheck(x, y) {
-  // TODO: check if off screen
-  return !((x > 100 || x < -100) || (y > 100 || y < -100));
+// Render the board onto the buffer
+function drawBoard() {
+  ctx.fillStyle = BLOCK_STYLE;
+  for (var y = 0; y < board.length; y++) {
+    for (var x = 0; x < board[y].length; x++) {
+      if (boardRects[[x,y]]) {
+        ctx.fillRect(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+      }
+    }
+  }
 }
 
-function drawPlayer(time, position) {
-  ctx.fillStyle = PLAYER_STYLE;
-  ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
-}
-
-function inputDirection(dir) {
-  player.dir = dir;
-}
-
+// Update the board state
 function updateBoard(time) {
   if (boardRects[[player.x, player.y]]) {
     delete boardRects[[player.x, player.y]];
   }
 }
 
+// Update the player state including movement input
 function updatePlayer(time) {
-    // Take input for a new location
   var x, y, count;
 
+  // Take input for a new location
   if ((player.destX == player.x && player.destY == player.y) &&
     (!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
     (player.dir != DIRECTION.none)) {
@@ -197,11 +197,13 @@ function updatePlayer(time) {
       break;
     }
 
+    // If the player died, setup the death animation
     if (player.dead) {
       player.deathAnimStart = time;
       player.deathAnimEnd = time + 1 / DEATH_SPEED;
     }
 
+    // Setup the animation for the player movement
     player.animStart = time;
     player.animEnd = time + count / PLAYER_SPEED;
     player.destX = x;
@@ -209,10 +211,12 @@ function updatePlayer(time) {
     player.dir = DIRECTION.none;
   } else if ((!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
     (player.dir != DIRECTION.none)) {
+    // After moving, unset the current direction
     player.dir = DIRECTION.none;
   }
 }
 
+// Calculate the current player pixel position
 function updatePlayerPos(time) {
   // Calculate current position
   var xPos;
@@ -235,6 +239,18 @@ function updatePlayerPos(time) {
   };
 }
 
+// Return true if in bounds of screen
+function boundsCheck(x, y) {
+  // TODO: check if off screen
+  return !((x > 100 || x < -100) || (y > 100 || y < -100));
+}
+
+// Called by key listener to input directions
+function inputDirection(dir) {
+  player.dir = dir;
+}
+
+// Update camera state data and position
 function updateCamera(time) {
   if (camera.animEnd && time > camera.animEnd) {
     camera.x = camera.destX;
@@ -263,6 +279,7 @@ function updateCamera(time) {
   camera.yPos = y;
 }
 
+// Render death animation to the buffer
 function drawDeath(time) {
   var alpha = 0.3;
   var percent = (time - player.deathAnimStart) / (player.deathAnimEnd - player.deathAnimStart);
@@ -282,20 +299,31 @@ function drawDeath(time) {
   }
 }
 
+// Draw the player onto the buffer
+function drawPlayer(time, position) {
+  ctx.fillStyle = PLAYER_STYLE;
+  ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+}
+
+// Render the buffer to the canvas
 function drawCamera(time) {
   canvasCtx.fillStyle = BACKGROUND_STYLE;
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
 }
 
+// Main game loop
 function drawFrame(time) {
+  // Setup code for timers
   if (!lastUpdate) {
+    // TODO: make this less hacky
     lastUpdate = time + 1;
     player.animStart = time + 1;
     player.animEnd = time + 2;
   }
   var delta = lastUpdate - time;
 
+  // Update game state if the player hasn't died
   if (!player.dead) {
     var cameraPos = updateCamera(time);
     updateBoard(time);
@@ -303,6 +331,7 @@ function drawFrame(time) {
   }
   var playerPos = updatePlayerPos(time);
 
+  // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
   drawBoard();
   drawPlayer(time, playerPos);
@@ -311,20 +340,26 @@ function drawFrame(time) {
     drawDeath(time);
   }
 
+  // FPS calculation
   var thisFrameFPS = 1000 / (time - lastUpdate);
   fps = thisFrameFPS;
   lastUpdate = time;
 
+  // Reregister the game loop callback
   window.requestAnimationFrame(drawFrame);
 }
 
+// Set up the main game loop to run
+// Note: a polyfill is used to allow this to work cross-browser
 window.requestAnimationFrame(drawFrame);
 
+// Write FPS data to the page
 var fpsOut = document.getElementById('fps');
 setInterval(function(){
   fpsOut.innerHTML = fps.toFixed(1) + "fps";
 }, 100);
 
+// Listen for keypresses for movement and fullscreen
 document.addEventListener('keydown', function(e) {
   switch (e.keyCode) {
     case 13: // ENTER. ESC should also take you out of fullscreen by default.
@@ -349,6 +384,14 @@ document.addEventListener('keydown', function(e) {
       break;
   }
 }, false);
+
+
+// Fullscreen code
+// http://html5-demos.appspot.com/static/fullscreen.html
+
+// This does not work in IE9 due to lack of browser support
+
+var cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.exitFullscreen;
 
 function onFullScreenEnter() {
   console.log("Entered fullscreen!");
@@ -375,14 +418,9 @@ function enterFullscreen() {
       elem.requestFullscreen();
     }
   }
-  // document.getElementById('enter-exit-fs').onclick = exitFullscreen;
 }
 
 function exitFullscreen() {
   console.log("exitFullscreen()");
   cancelFullScreen();
-  document.getElementById('enter-exit-fs').onclick = enterFullscreen;
 }
-
-var gameWrapper = document.getElementById("game-wrapper");
-var elem = gameWrapper;
