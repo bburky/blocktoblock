@@ -11,12 +11,6 @@ buffer.height = 1000;
 var canvasCtx = canvas.getContext('2d');
 var ctx = buffer.getContext('2d');
 
-// var COLLISION_FIXUP_NUM = 5;
-// var GRAVITY = 2;
-
-// var JUMP_DURATION = 0.5 * 1000;
-// var JUMP_VELOCITY = 4; // Must be greater than GRAVITY
-
 var BLOCK_WIDTH = 50;
 var BLOCK_HEIGHT = 50;
 var BLOCK_STYLE = 'rgb(200,0,0)';
