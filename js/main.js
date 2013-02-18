@@ -21,10 +21,14 @@ var PLAYER_STYLE = 'rgb(0,0,0)';
 var PLAYER_SPEED = 6/1000;
 
 var BACKGROUND_STYLE = 'rgb(255,255,255)';
+var TEXT_FONT = '50pt Helvetica, Arial';
+var TEXT_STYLE = 'rgb(0,0,0)';
 var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
 var CAMERA_SPEED = 1/1000;
 
+var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
+var DEATH_SPEED = 1.5/1000;
 var KEYPRESS_DELAY = 100;
 
 var DIRECTION = {
@@ -44,8 +48,8 @@ var player = {
   y: 1,
   destX: 4,
   destY: 1,
-  dir: DIRECTION.none
-  // animEnd
+  dir: DIRECTION.none,
+  dead: false
 };
 var camera = {
   x: 0,
@@ -54,24 +58,24 @@ var camera = {
   destY: 0
 };
 var board = [
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-  [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-  [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+  [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 var boardRects = generateBoardRects();
 
@@ -135,10 +139,10 @@ function updateBoard(time) {
     delete boardRects[[player.x, player.y]];
   }
 }
+
 function updatePlayer(time) {
-  // Take input for a new location
+    // Take input for a new location
   var x, y, count;
-  var dead = false;
 
   if ((player.destX == player.x && player.destY == player.y) &&
     (!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
@@ -152,7 +156,7 @@ function updatePlayer(time) {
       y = player.y - 1;
       while (!boardRects[[x, y]]) {
         if (!boundsCheck(x, y)) {
-          dead = true;
+          player.dead = time;
           break;
         }
         y--;
@@ -164,7 +168,7 @@ function updatePlayer(time) {
       y = player.y;
       while (!boardRects[[x, y]]) {
         if (!boundsCheck(x, y)) {
-          dead = true;
+          player.dead = time;
           break;
         }
         x++;
@@ -176,7 +180,7 @@ function updatePlayer(time) {
       y = player.y + 1;
       while (!boardRects[[x, y]]) {
         if (!boundsCheck(x, y)) {
-          dead = true;
+          player.dead = time;
           break;
         }
         y++;
@@ -188,13 +192,18 @@ function updatePlayer(time) {
       y = player.y;
       while (!boardRects[[x, y]]) {
         if (!boundsCheck(x, y)) {
-          dead = true;
+          player.dead = time;
           break;
         }
         x--;
       }
       count = player.x - x;
       break;
+    }
+
+    if (player.dead) {
+      player.deathAnimStart = time;
+      player.deathAnimEnd = time + 1 / DEATH_SPEED;
     }
 
     player.animStart = time;
@@ -206,7 +215,9 @@ function updatePlayer(time) {
     (player.dir != DIRECTION.none)) {
     player.dir = DIRECTION.none;
   }
+}
 
+function updatePlayerPos(time) {
   // Calculate current position
   var xPos;
   var yPos;
@@ -223,7 +234,6 @@ function updatePlayer(time) {
   }
 
   return {
-    dead: dead,
     x: xPos,
     y: yPos
   };
@@ -241,26 +251,45 @@ function updateCamera(time) {
     camera.animEnd = time + Math.sqrt(Math.pow(camera.x - camera.destX, 2) + Math.pow(camera.y - camera.destY, 2)) / CAMERA_SPEED;
   }
 
-
-}
-
-function drawCamera(time) {
   var percent = (time - camera.animStart) / (camera.animEnd - camera.animStart);
   var x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
   var y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
 
   if (camera.animEnd && time > camera.animEnd) {
-    x = camera.x * BLOCK_WIDTH;
-    y = camera.y * BLOCK_HEIGHT;
+    x = camera.destX * BLOCK_WIDTH;
+    y = camera.destY * BLOCK_HEIGHT;
   } else {
     x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
     y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
   }
 
+  camera.xPos = x;
+  camera.yPos = y;
+}
 
+function drawDeath(time) {
+  var alpha = 0.3;
+  var percent = (time - player.deathAnimStart) / (player.deathAnimEnd - player.deathAnimStart);
+
+  if (time < player.deathAnimEnd) {
+    alpha = 0.65 - Math.abs(percent - 0.65) ;
+  }
+
+  canvasCtx.fillStyle = DEATH_STYLE_FRAGMENT + alpha + ')';
+  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (time >= player.deathAnimEnd) {
+    canvasCtx.font = TEXT_FONT;
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillStyle = TEXT_STYLE;
+    canvasCtx.fillText('Game Over', canvas.width/2, canvas.height/2);
+  }
+}
+
+function drawCamera(time) {
   canvasCtx.fillStyle = BACKGROUND_STYLE;
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
-  canvasCtx.drawImage(buffer, x, y);
+  canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
 }
 
 function drawFrame(time) {
@@ -271,14 +300,20 @@ function drawFrame(time) {
   }
   var delta = lastUpdate - time;
 
-  var cameraPos = updateCamera(time);
-  var playerPos = updatePlayer(time);
-  updateBoard(time);
+  if (!player.dead) {
+    var cameraPos = updateCamera(time);
+    updateBoard(time);
+    updatePlayer(time);
+  }
+  var playerPos = updatePlayerPos(time);
 
   ctx.clearRect(0,0,buffer.width, buffer.height);
   drawBoard();
   drawPlayer(time, playerPos);
   drawCamera(time);
+  if (player.dead) {
+    drawDeath(time);
+  }
 
   var thisFrameFPS = 1000 / (time - lastUpdate);
   fps = thisFrameFPS;
