@@ -1,7 +1,5 @@
 var cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullScreen || document.exitFullscreen;
 
-$('#start').click(function() {started = true;});
-
 var canvas = document.getElementById('canvas');
 
 var buffer = document.createElement("canvas");
@@ -90,7 +88,6 @@ function drawBoard() {
   }
 }
 
-
 // Generate sequence of n moves starting at (x, y) as an initial position
 function generateSequence(x, y, n) {
   var curX = x;
@@ -102,7 +99,6 @@ function generateSequence(x, y, n) {
     nextY = Math.floor(Math.random() * 4) - 2;
     seq.push([x,y]);
   }
-
 }
 
 function generateBoardRects() {

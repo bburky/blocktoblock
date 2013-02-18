@@ -21,10 +21,32 @@
         <![endif]-->
 
         <div id="fps">xx.x fps</div>
-        <button id="start">Start</button>
         <div id="game-wrapper">
             <canvas id="canvas" width="500" height="500" style=" border: thin solid black"></canvas>
         </div>
+
+        <h1>Instructions</h1>
+
+        <p>
+            Collect all red squares. Do not go offscreen.
+        </p>
+
+        <h2>Controls</h2>
+        <dl>
+            <dt>Movement</dt>
+            <dd>W, A, S, D</dd>
+
+            <dt>Fullscreen</dt>
+            <dd>F</dd>
+        </dl>
+
+        <h2>Planned Features</h2>
+        <p>
+            The red squares will be dynamically continously generated and the
+            game will be infinite. Score will be based on time. The camera will
+            follow the needed sequence of blocks. If either the player goes off
+            screen or misses a block, the game ends.
+        </p>
 
         <!-- TODO: remove jQuery dev version -->
         <script src="js/vendor/jquery-1.9.0.js"></script>
