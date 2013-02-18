@@ -121,6 +121,11 @@ function generateBoardRects() {
   return rects;
 }
 
+// Return true if in bounds of screen
+function boundsCheck(x, y) {
+  // TODO: check if off screen
+  return !((x > 100 || x < -100) || (y > 100 || y < -100));
+}
 
 function drawPlayer(time, position) {
   ctx.fillStyle = PLAYER_STYLE;
@@ -139,6 +144,7 @@ function updateBoard(time) {
 function updatePlayer(time) {
   // Take input for a new location
   var x, y, count;
+  var dead = false;
 
   if ((player.destX == player.x && player.destY == player.y) &&
     (!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
@@ -150,25 +156,49 @@ function updatePlayer(time) {
     case DIRECTION.up:
       x = player.x;
       y = player.y - 1;
-      while (!boardRects[[x, y]]) y--;
+      while (!boardRects[[x, y]]) {
+        if (!boundsCheck(x, y)) {
+          dead = true;
+          break;
+        }
+        y--;
+      }
       count = player.y - y;
       break;
     case DIRECTION.right:
       x = player.x + 1;
       y = player.y;
-      while (!boardRects[[x, y]]) x++;
+      while (!boardRects[[x, y]]) {
+        if (!boundsCheck(x, y)) {
+          dead = true;
+          break;
+        }
+        x++;
+      }
       count = x - player.x;
       break;
     case DIRECTION.down:
       x = player.x;
       y = player.y + 1;
-      while (!boardRects[[x, y]]) y++;
+      while (!boardRects[[x, y]]) {
+        if (!boundsCheck(x, y)) {
+          dead = true;
+          break;
+        }
+        y++;
+      }
       count = y - player.y;
       break;
     case DIRECTION.left:
       x = player.x - 1;
       y = player.y;
-      while (!boardRects[[x, y]]) x--;
+      while (!boardRects[[x, y]]) {
+        if (!boundsCheck(x, y)) {
+          dead = true;
+          break;
+        }
+        x--;
+      }
       count = player.x - x;
       break;
     }
@@ -199,6 +229,7 @@ function updatePlayer(time) {
   }
 
   return {
+    dead: dead,
     x: xPos,
     y: yPos
   };
@@ -218,6 +249,7 @@ function updateCamera(time) {
 
 
 }
+
 function drawCamera(time) {
   var percent = (time - camera.animStart) / (camera.animEnd - camera.animStart);
   var x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
@@ -245,13 +277,13 @@ function drawFrame(time) {
   }
   var delta = lastUpdate - time;
 
-  var position = updatePlayer(time);
-  updateCamera(time);
+  var cameraPos = updateCamera(time);
+  var playerPos = updatePlayer(time);
   updateBoard(time);
 
   ctx.clearRect(0,0,buffer.width, buffer.height);
   drawBoard();
-  drawPlayer(time, position);
+  drawPlayer(time, playerPos);
   drawCamera(time);
 
   var thisFrameFPS = 1000 / (time - lastUpdate);
