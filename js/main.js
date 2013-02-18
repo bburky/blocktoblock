@@ -252,6 +252,7 @@ function inputDirection(dir) {
 
 // Update camera state data and position
 function updateCamera(time) {
+  // TODO: change the current camera position logic to track a sequece of moves
   if (camera.animEnd && time > camera.animEnd) {
     camera.x = camera.destX;
     camera.y = camera.destY;
