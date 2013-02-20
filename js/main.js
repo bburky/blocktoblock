@@ -32,6 +32,8 @@ var DIRECTION = {
 
 // Canvas and state variables
 
+var wrapper = document.getElementById('game-wrapper');
+
 // This is the visible on screen canvas
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
@@ -396,8 +398,8 @@ var cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullSc
 
 function onFullScreenEnter() {
   console.log("Entered fullscreen!");
-  canvas.onwebkitfullscreenchange = onFullScreenExit;
-  canvas.onmozfullscreenchange = onFullScreenExit;
+  wrapper.onwebkitfullscreenchange = onFullScreenExit;
+  wrapper.onmozfullscreenchange = onFullScreenExit;
 }
 
 // Called whenever the browser exits fullscreen.
@@ -407,16 +409,16 @@ function onFullScreenExit() {
 
 function enterFullscreen() {
   console.log("enterFullscreen()");
-  canvas.onwebkitfullscreenchange = onFullScreenEnter;
-  canvas.onmozfullscreenchange = onFullScreenEnter;
-  canvas.onfullscreenchange = onFullScreenEnter;
-  if (canvas.webkitRequestFullscreen) {
-    canvas.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  wrapper.onwebkitfullscreenchange = onFullScreenEnter;
+  wrapper.onmozfullscreenchange = onFullScreenEnter;
+  wrapper.onfullscreenchange = onFullScreenEnter;
+  if (wrapper.webkitRequestFullscreen) {
+    wrapper.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
   } else {
-    if (canvas.mozRequestFullScreen) {
-      canvas.mozRequestFullScreen();
+    if (wrapper.mozRequestFullScreen) {
+      wrapper.mozRequestFullScreen();
     } else {
-      canvas.requestFullscreen();
+      wrapper.requestFullscreen();
     }
   }
 }
