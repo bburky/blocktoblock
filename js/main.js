@@ -396,8 +396,8 @@ var cancelFullScreen = document.webkitExitFullscreen || document.mozCancelFullSc
 
 function onFullScreenEnter() {
   console.log("Entered fullscreen!");
-  elem.onwebkitfullscreenchange = onFullScreenExit;
-  elem.onmozfullscreenchange = onFullScreenExit;
+  canvas.onwebkitfullscreenchange = onFullScreenExit;
+  canvas.onmozfullscreenchange = onFullScreenExit;
 }
 
 // Called whenever the browser exits fullscreen.
@@ -407,16 +407,16 @@ function onFullScreenExit() {
 
 function enterFullscreen() {
   console.log("enterFullscreen()");
-  elem.onwebkitfullscreenchange = onFullScreenEnter;
-  elem.onmozfullscreenchange = onFullScreenEnter;
-  elem.onfullscreenchange = onFullScreenEnter;
-  if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+  canvas.onwebkitfullscreenchange = onFullScreenEnter;
+  canvas.onmozfullscreenchange = onFullScreenEnter;
+  canvas.onfullscreenchange = onFullScreenEnter;
+  if (canvas.webkitRequestFullscreen) {
+    canvas.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
   } else {
-    if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
+    if (canvas.mozRequestFullScreen) {
+      canvas.mozRequestFullScreen();
     } else {
-      elem.requestFullscreen();
+      canvas.requestFullscreen();
     }
   }
 }
