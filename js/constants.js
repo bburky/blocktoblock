@@ -37,7 +37,7 @@ var wrapper = document.getElementById('game-wrapper');
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
 
-// Create a secont buffer to be blited onto the canvas
+// Create a second buffer to be blited onto the canvas
 var buffer = document.createElement("canvas");
 buffer.width = 1000;
 buffer.height = 1000;
