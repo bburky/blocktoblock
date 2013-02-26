@@ -1,3 +1,4 @@
+// requestAnimationFrame polyfill
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 
 (function() {
