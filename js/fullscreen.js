@@ -9,6 +9,10 @@ function onFullScreenEnter() {
   console.log("Entered fullscreen!");
   wrapper.onwebkitfullscreenchange = onFullScreenExit;
   wrapper.onmozfullscreenchange = onFullScreenExit;
+  setTimeout(function() {
+    canvas.width = document.width;
+    canvas.height = document.height;
+  }, 100);
 }
 
 // Called whenever the browser exits fullscreen.
