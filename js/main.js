@@ -48,11 +48,10 @@ function updateBoard(time) {
   }
 }
 
-function getOtherPlayer(player) {
-  if (player == players[0]) {
-    return players[1];
-  } else {
-    return players[0];
+function collidePlayers() {
+  if (players[0].destX == players[1].destX && players[0].destY == players[1].destY && players[0].dir != players[1].dir) {
+    players[0].dir = DIRECTION.none;
+    players[1].dir = DIRECTION.none;
   }
 }
 
@@ -103,9 +102,6 @@ function updatePlayer(player, time) {
     }
 
     if (boardRects[[x,y]] == 1) {
-      player.dir = DIRECTION.none;
-    }
-    if (getOtherPlayer().destX === x && getOtherPlayer().destY === y) {
       player.dir = DIRECTION.none;
     }
 
@@ -245,6 +241,7 @@ function drawFrame(time) {
     updateBoard(time);
     updatePlayer(players[0], time);
     updatePlayer(players[1], time);
+    collidePlayers();
   }
   var player0Pos = updatePlayerPos(players[0], time);
   var player1Pos = updatePlayerPos(players[1], time);
