@@ -47,14 +47,21 @@ var fps;
 var lastUpdate;
 var started = false;
 // Player state data
-var player = {
-  x: 4,
-  y: 1,
-  destX: 4,
-  destY: 1,
-  dir: DIRECTION.none,
-  dead: false
-};
+var players = [{
+    x: 2,
+    y: 1,
+    destX: 2,
+    destY: 1,
+    dir: DIRECTION.none,
+    dead: false
+  }, {
+    x: 2,
+    y: 1,
+    destX: 2,
+    destY: 1,
+    dir: DIRECTION.none,
+    dead: false
+  }];
 // Camera position state data
 var camera = {
   x: 0,

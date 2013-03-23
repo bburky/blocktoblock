@@ -18,8 +18,8 @@ function generateBoardRects() {
 
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (board[y][x]) {
-        rects[[x,y]] = true;
+      if (board[y][x] === 1) {
+        rects[[x,y]] = 1;
       }
     }
   }
@@ -32,7 +32,7 @@ function drawBoard() {
   ctx.fillStyle = BLOCK_STYLE;
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (boardRects[[x,y]]) {
+      if (boardRects[[x,y]] === 1) {
         ctx.fillRect(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
@@ -41,13 +41,15 @@ function drawBoard() {
 
 // Update the board state
 function updateBoard(time) {
-  if (boardRects[[player.x, player.y]]) {
-    delete boardRects[[player.x, player.y]];
+  for (var i = 0; i < players.length; i++) {
+    if (boardRects[[players[i].x, players[i].y]] === 1) {
+      boardRects[[players[i].x, players[i].y]] = 2;
+    }
   }
 }
 
 // Update the player state including movement input
-function updatePlayer(time) {
+function updatePlayer(player, time) {
   var x, y, count;
 
   // Take input for a new location
@@ -61,7 +63,7 @@ function updatePlayer(time) {
     case DIRECTION.up:
       x = player.x;
       y = player.y - 1;
-      while (!boardRects[[x, y]]) {
+      while (boardRects[[x, y]] !== 1) {
         if (!boundsCheck(x, y)) {
           player.dead = time;
           break;
@@ -73,7 +75,7 @@ function updatePlayer(time) {
     case DIRECTION.right:
       x = player.x + 1;
       y = player.y;
-      while (!boardRects[[x, y]]) {
+      while (boardRects[[x, y]] !== 1) {
         if (!boundsCheck(x, y)) {
           player.dead = time;
           break;
@@ -85,7 +87,7 @@ function updatePlayer(time) {
     case DIRECTION.down:
       x = player.x;
       y = player.y + 1;
-      while (!boardRects[[x, y]]) {
+      while (boardRects[[x, y]] !== 1) {
         if (!boundsCheck(x, y)) {
           player.dead = time;
           break;
@@ -97,7 +99,7 @@ function updatePlayer(time) {
     case DIRECTION.left:
       x = player.x - 1;
       y = player.y;
-      while (!boardRects[[x, y]]) {
+      while (boardRects[[x, y]] !== 1) {
         if (!boundsCheck(x, y)) {
           player.dead = time;
           break;
@@ -128,7 +130,7 @@ function updatePlayer(time) {
 }
 
 // Calculate the current player pixel position
-function updatePlayerPos(time) {
+function updatePlayerPos(player, time) {
   // Calculate current position
   var xPos;
   var yPos;
@@ -157,7 +159,7 @@ function boundsCheck(x, y) {
 }
 
 // Called by key listener to input directions
-function inputDirection(dir) {
+function inputDirection(player, dir) {
   player.dir = dir;
 }
 
@@ -192,7 +194,7 @@ function updateCamera(time) {
 }
 
 // Render death animation to the buffer
-function drawDeath(time) {
+function drawDeath(player, time) {
   var alpha = 0.3;
   var percent = (time - player.deathAnimStart) / (player.deathAnimEnd - player.deathAnimStart);
 
@@ -230,26 +232,33 @@ function drawFrame(time) {
   if (!lastUpdate) {
     // TODO: make this less hacky
     lastUpdate = time + 1;
-    player.animStart = time + 1;
-    player.animEnd = time + 2;
+    players[0].animStart = time + 1;
+    players[0].animEnd = time + 2;
+    players[1].animStart = time + 1;
+    players[1].animEnd = time + 2;
   }
   var delta = lastUpdate - time;
 
   // Update game state if the player hasn't died
-  if (!player.dead) {
+  if (!players[0].dead && !players[1].dead ) {
     var cameraPos = updateCamera(time);
     updateBoard(time);
-    updatePlayer(time);
+    updatePlayer(players[0], time);
+    updatePlayer(players[1], time);
   }
-  var playerPos = updatePlayerPos(time);
+  var player0Pos = updatePlayerPos(players[0], time);
+  var player1Pos = updatePlayerPos(players[1], time);
 
   // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
   drawBoard();
-  drawPlayer(time, playerPos);
+  drawPlayer(time, player0Pos);
+  drawPlayer(time, player1Pos);
   drawCamera(time);
-  if (player.dead) {
-    drawDeath(time);
+  if (players[0].dead) {
+    drawDeath(players[0], time);
+  } else if (players[1].dead) {
+    drawDeath(players[1], time);
   }
 
   // FPS calculation
@@ -279,16 +288,28 @@ document.addEventListener('keydown', function(e) {
       enterFullscreen();
       break;
     case 87: // w
-      inputDirection(DIRECTION.up);
+      inputDirection(players[0], DIRECTION.up);
       break;
     case 68: // d
-      inputDirection(DIRECTION.right);
+      inputDirection(players[0], DIRECTION.right);
       break;
     case 83: // s
-      inputDirection(DIRECTION.down);
+      inputDirection(players[0], DIRECTION.down);
       break;
     case 65: // a
-      inputDirection(DIRECTION.left);
+      inputDirection(players[0], DIRECTION.left);
+      break;
+    case 38: // up
+      inputDirection(players[1], DIRECTION.up);
+      break;
+    case 39: // right
+      inputDirection(players[1], DIRECTION.right);
+      break;
+    case 40: // down
+      inputDirection(players[1], DIRECTION.down);
+      break;
+    case 37: // left
+      inputDirection(players[1], DIRECTION.left);
       break;
   }
 }, false);
