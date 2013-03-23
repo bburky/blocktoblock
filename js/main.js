@@ -48,6 +48,14 @@ function updateBoard(time) {
   }
 }
 
+function getOtherPlayer(player) {
+  if (player == players[0]) {
+    return players[1];
+  } else {
+    return players[0];
+  }
+}
+
 // Update the player state including movement input
 function updatePlayer(player, time) {
   var x, y, count;
@@ -95,6 +103,9 @@ function updatePlayer(player, time) {
     }
 
     if (boardRects[[x,y]] == 1) {
+      player.dir = DIRECTION.none;
+    }
+    if (getOtherPlayer().destX === x && getOtherPlayer().destY === y) {
       player.dir = DIRECTION.none;
     }
 
