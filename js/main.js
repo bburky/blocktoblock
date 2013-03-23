@@ -166,28 +166,28 @@ function inputDirection(player, dir) {
 // Update camera state data and position
 function updateCamera(time) {
   // TODO: change the current camera position logic to track a sequece of moves
-  if (camera.animEnd && time > camera.animEnd) {
-    camera.x = camera.destX;
-    camera.y = camera.destY;
-  }
-  if (camera.destX == camera.x && camera.destY == camera.y) {
-    camera.destX = Math.floor(Math.random() * 2) - 1;
-    camera.destY = Math.floor(Math.random() * 2) - 1;
-    camera.animStart = time;
-    camera.animEnd = time + Math.sqrt(Math.pow(camera.x - camera.destX, 2) + Math.pow(camera.y - camera.destY, 2)) / CAMERA_SPEED;
-  }
+  // if (camera.animEnd && time > camera.animEnd) {
+  //   camera.x = camera.destX;
+  //   camera.y = camera.destY;
+  // }
+  // if (camera.destX == camera.x && camera.destY == camera.y) {
+  //   camera.destX = Math.floor(Math.random() * 2) - 1;
+  //   camera.destY = Math.floor(Math.random() * 2) - 1;
+  //   camera.animStart = time;
+  //   camera.animEnd = time + Math.sqrt(Math.pow(camera.x - camera.destX, 2) + Math.pow(camera.y - camera.destY, 2)) / CAMERA_SPEED;
+  // }
 
-  var percent = (time - camera.animStart) / (camera.animEnd - camera.animStart);
-  var x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
-  var y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
+  // var percent = (time - camera.animStart) / (camera.animEnd - camera.animStart);
+  // var x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
+  // var y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
 
-  if (camera.animEnd && time > camera.animEnd) {
+  // if (camera.animEnd && time > camera.animEnd) {
     x = camera.destX * BLOCK_WIDTH;
     y = camera.destY * BLOCK_HEIGHT;
-  } else {
-    x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
-    y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
-  }
+  // } else {
+  //   x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
+  //   y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
+  // }
 
   camera.xPos = x;
   camera.yPos = y;
