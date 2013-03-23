@@ -63,51 +63,39 @@ function updatePlayer(player, time) {
     case DIRECTION.up:
       x = player.x;
       y = player.y - 1;
-      while (boardRects[[x, y]] !== 1) {
-        if (!boundsCheck(x, y)) {
-          player.dead = time;
-          break;
-        }
-        y--;
+      if (!boundsCheck(x, y)) {
+        player.dead = time;
       }
       count = player.y - y;
       break;
     case DIRECTION.right:
       x = player.x + 1;
       y = player.y;
-      while (boardRects[[x, y]] !== 1) {
-        if (!boundsCheck(x, y)) {
-          player.dead = time;
-          break;
-        }
-        x++;
+      if (!boundsCheck(x, y)) {
+        player.dead = time;
       }
       count = x - player.x;
       break;
     case DIRECTION.down:
       x = player.x;
       y = player.y + 1;
-      while (boardRects[[x, y]] !== 1) {
-        if (!boundsCheck(x, y)) {
-          player.dead = time;
-          break;
-        }
-        y++;
+      if (!boundsCheck(x, y)) {
+        player.dead = time;
       }
       count = y - player.y;
       break;
     case DIRECTION.left:
       x = player.x - 1;
       y = player.y;
-      while (boardRects[[x, y]] !== 1) {
-        if (!boundsCheck(x, y)) {
-          player.dead = time;
-          break;
-        }
-        x--;
+      if (!boundsCheck(x, y)) {
+        player.dead = time;
       }
       count = player.x - x;
       break;
+    }
+
+    if (boardRects[[x,y]] == 1) {
+      player.dir = DIRECTION.none;
     }
 
     // If the player died, setup the death animation
@@ -121,11 +109,10 @@ function updatePlayer(player, time) {
     player.animEnd = time + count / PLAYER_SPEED;
     player.destX = x;
     player.destY = y;
-    player.dir = DIRECTION.none;
   } else if ((!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
     (player.dir != DIRECTION.none)) {
     // After moving, unset the current direction
-    player.dir = DIRECTION.none;
+    // player.dir = DIRECTION.none;
   }
 }
 
@@ -160,7 +147,9 @@ function boundsCheck(x, y) {
 
 // Called by key listener to input directions
 function inputDirection(player, dir) {
-  player.dir = dir;
+  if (player.dir === DIRECTION.none) {
+    player.dir = dir;
+  }
 }
 
 // Update camera state data and position
