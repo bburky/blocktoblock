@@ -55,9 +55,9 @@ var players = [{
     dir: DIRECTION.none,
     dead: false
   }, {
-    x: 2,
+    x: 4,
     y: 1,
-    destX: 2,
+    destX: 4,
     destY: 1,
     dir: DIRECTION.none,
     dead: false
