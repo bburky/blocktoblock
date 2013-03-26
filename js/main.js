@@ -33,7 +33,8 @@ function drawBoard() {
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1) {
-        ctx.drawImage(blockImgs[0], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+        var hash = (x+y) % 2;
+        ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
   }
@@ -313,7 +314,7 @@ function loadAssets(callback) {
     players[i].img.onload = checkAssetsLoaded;
   }
 
-    for (var i = 0; i < BLOCK_IMG_SRCS.length; i++) {
+  for (var i = 0; i < BLOCK_IMG_SRCS.length; i++) {
     blockImgs[i] = new Image();
     blockImgs[i].src = BLOCK_IMG_SRCS[i];
     blockImgs[i].onload = checkAssetsLoaded;
