@@ -19,6 +19,8 @@ var TEXT_STYLE = 'rgb(0,0,0)';
 var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
 var CAMERA_SPEED = 1/1000;
+var CAMERA_X_OFFSET = 1080/2;
+var CAMERA_Y_OFFSET = 1920/2;
 
 // 2 player images, block images, and background (later audio too)
 var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1;
@@ -50,7 +52,7 @@ var canvasCtx = canvas.getContext('2d');
 // Create a second buffer to be blited onto the canvas
 var buffer = document.createElement("canvas");
 buffer.width = 4000;
-buffer.height = 2000;
+buffer.height = 3000;
 var ctx = buffer.getContext('2d');
 
 var fps = 0.0;

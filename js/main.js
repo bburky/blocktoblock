@@ -210,7 +210,7 @@ function drawPlayer(player, time, position) {
       break;
     case DIRECTION.left:
       for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
-        ctx.drawImage(player.img, position.x+i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(player.img, position.x+i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT)
       }
       break;
     }
@@ -223,8 +223,9 @@ function drawPlayer(player, time, position) {
 
 // Render the buffer to the canvas
 function drawCamera(time) {
-  canvasCtx.fillStyle = BACKGROUND_STYLE;
-  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+  // canvasCtx.fillStyle = BACKGROUND_STYLE;
+  // canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+  canvasCtx.drawImage(tutorialBg, CAMERA_X_OFFSET - camera.xPos, CAMERA_Y_OFFSET - camera.yPos, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
 }
 
@@ -250,11 +251,10 @@ function drawFrame(time) {
   }
   var player0Pos = updatePlayerPos(players[0], time);
   var player1Pos = updatePlayerPos(players[1], time);
-  var cameraPos = updateCamera(time, player0Pos, player1Pos);
+  updateCamera(time, player0Pos, player1Pos);
 
   // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
-  ctx.drawImage(tutorialBg, 0, 0);
   drawBoard();
   drawPlayer(players[0], time, player0Pos);
   drawPlayer(players[1], time, player1Pos);
