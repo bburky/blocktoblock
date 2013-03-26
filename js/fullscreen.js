@@ -26,7 +26,7 @@ function enterFullscreen() {
   wrapper.onmozfullscreenchange = onFullScreenEnter;
   wrapper.onfullscreenchange = onFullScreenEnter;
   if (wrapper.webkitRequestFullscreen) {
-    wrapper.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+    wrapper.webkitRequestFullscreen(/Safari/.test(navigator.userAgent) ? undefined : Element.ALLOW_KEYBOARD_INPUT);
   } else {
     if (wrapper.mozRequestFullScreen) {
       wrapper.mozRequestFullScreen();
