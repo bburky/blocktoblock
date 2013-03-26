@@ -33,7 +33,7 @@ function drawBoard() {
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1) {
-        ctx.fillRect(x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(blockImgs[0], x*BLOCK_WIDTH, y*BLOCK_HEIGHT);
       }
     }
   }
@@ -211,10 +211,6 @@ function drawDeath(player, time) {
 
 // Draw the player onto the buffer
 function drawPlayer(player, time, position) {
-  // ctx.fillStyle = PLAYER_STYLE;
-  // ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
-
-
   if (player.dir != DIRECTION.none) {
     ctx.globalAlpha = 1.25/MOTION_BLUR_STEPS;
     switch(player.dir) {
@@ -316,6 +312,13 @@ function loadAssets(callback) {
     players[i].img.src = players[i].imgSrc;
     players[i].img.onload = checkAssetsLoaded;
   }
+
+    for (var i = 0; i < BLOCK_IMG_SRCS.length; i++) {
+    blockImgs[i] = new Image();
+    blockImgs[i].src = BLOCK_IMG_SRCS[i];
+    blockImgs[i].onload = checkAssetsLoaded;
+  }
+
 }
 
 // Initialization and game loop

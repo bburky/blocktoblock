@@ -2,7 +2,7 @@
 var BLOCK_WIDTH = 45;
 var BLOCK_HEIGHT = 45;
 var BLOCK_STYLE = 'rgb(200,0,0)';
-var BLOCK_IMG_SRCS = ['block1.png', 'block2.png'];
+var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block2.png'];
 
 var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
@@ -17,8 +17,8 @@ var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
 var CAMERA_SPEED = 1/1000;
 
-// 2 player images, (later 2 block images, background and audio too)
-var TOTAL_ASSETS = 2;
+// 2 player images, 2 block images, (later background and audio too)
+var TOTAL_ASSETS = 4;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
