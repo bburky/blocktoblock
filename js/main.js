@@ -210,9 +210,11 @@ function drawDeath(player, time) {
 }
 
 // Draw the player onto the buffer
-function drawPlayer(time, position) {
-  ctx.fillStyle = PLAYER_STYLE;
-  ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+function drawPlayer(player, time, position) {
+  // ctx.fillStyle = PLAYER_STYLE;
+  // ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+
+  ctx.drawImage(player.img, position.x, position.y);
 }
 
 // Render the buffer to the canvas
@@ -249,8 +251,8 @@ function drawFrame(time) {
   // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
   drawBoard();
-  drawPlayer(time, player0Pos);
-  drawPlayer(time, player1Pos);
+  drawPlayer(players[0], time, player0Pos);
+  drawPlayer(players[1], time, player1Pos);
   drawCamera(time);
   if (players[0].dead) {
     drawDeath(players[0], time);
@@ -267,11 +269,36 @@ function drawFrame(time) {
   window.requestAnimationFrame(drawFrame);
 }
 
+function loadAssets(callback) {
+  var assetsLoaded = 0;
 
+  function checkAssetsLoaded() {
+    assetsLoaded++;
+    if (assetsLoaded == TOTAL_ASSETS) {
+      callback();
+    }
+  }
+
+  // Load images
+  for (var i = 0; i < players.length; i++) {
+    players[i].img = new Image();
+    players[i].img.src = players[i].imgSrc;
+    players[i].img.onload = checkAssetsLoaded;
+  }
+}
 
 // Initialization and game loop
+function initGame() {
+  restartGame();
 
-var boardRects = generateBoardRects();
+  // Set up the main game loop to run
+  // Note: a polyfill is used to allow this to work cross-browser
+  window.requestAnimationFrame(drawFrame);
+}
+
+function restartGame() {
+  boardRects = generateBoardRects();
+}
 
 // Listen for keypresses for movement and fullscreen
 document.addEventListener('keydown', function(e) {
@@ -311,12 +338,13 @@ document.addEventListener('keydown', function(e) {
   }
 }, false);
 
-// Set up the main game loop to run
-// Note: a polyfill is used to allow this to work cross-browser
-window.requestAnimationFrame(drawFrame);
 
 // Write FPS data to the page
 var fpsOut = document.getElementById('fps');
 setInterval(function(){
   fpsOut.innerHTML = fps.toFixed(1) + "fps";
 }, 100);
+
+// Load assets and init game
+
+loadAssets(initGame);

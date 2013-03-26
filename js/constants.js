@@ -1,7 +1,8 @@
 // Constants
-var BLOCK_WIDTH = 50;
-var BLOCK_HEIGHT = 50;
+var BLOCK_WIDTH = 45;
+var BLOCK_HEIGHT = 45;
 var BLOCK_STYLE = 'rgb(200,0,0)';
+var BLOCK_IMG_SRCS = ['block1.png', 'block2.png'];
 
 var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
@@ -14,6 +15,9 @@ var TEXT_STYLE = 'rgb(0,0,0)';
 var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
 var CAMERA_SPEED = 1/1000;
+
+// 2 player images, (later 2 block images, background and audio too)
+var TOTAL_ASSETS = 2;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
@@ -30,6 +34,7 @@ var DIRECTION = {
 
 
 // Canvas and state variables
+var blockImgs = [];
 
 var wrapper = document.getElementById('game-wrapper');
 
@@ -43,7 +48,7 @@ buffer.width = 1000;
 buffer.height = 1000;
 var ctx = buffer.getContext('2d');
 
-var fps;
+var fps = 0.0;
 var lastUpdate;
 var started = false;
 // Player state data
@@ -53,14 +58,16 @@ var players = [{
     destX: 2,
     destY: 1,
     dir: DIRECTION.none,
-    dead: false
+    dead: false,
+    imgSrc: 'img/player1.png'
   }, {
     x: 4,
     y: 1,
     destX: 4,
     destY: 1,
     dir: DIRECTION.none,
-    dead: false
+    dead: false,
+    imgSrc: 'img/player2.png'
   }];
 // Camera position state data
 var camera = {
