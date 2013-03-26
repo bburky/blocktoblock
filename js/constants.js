@@ -14,6 +14,7 @@ var MOTION_BLUR_STEPS = 10;
 
 var BACKGROUND_STYLE = 'rgb(255,255,255)';
 var TEXT_FONT = '50pt Helvetica, Arial';
+var FPS_TEXT_FONT = '12pt Helvetica, Arial';
 var TEXT_STYLE = 'rgb(0,0,0)';
 var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;

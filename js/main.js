@@ -270,6 +270,11 @@ function drawFrame(time) {
   fps = thisFrameFPS;
   lastUpdate = time;
 
+  canvasCtx.font = FPS_TEXT_FONT;
+  canvasCtx.textAlign = 'left';
+  canvasCtx.fillStyle = TEXT_STYLE;
+  canvasCtx.fillText(fps.toFixed(1) + "fps", 0, 15);
+
   // Reregister the game loop callback
   window.requestAnimationFrame(drawFrame);
 }
