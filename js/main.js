@@ -33,7 +33,7 @@ function drawBoard() {
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1) {
-        ctx.drawImage(blockImgs[0], x*BLOCK_WIDTH, y*BLOCK_HEIGHT);
+        ctx.drawImage(blockImgs[0], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
   }
@@ -218,28 +218,28 @@ function drawPlayer(player, time, position) {
     //   break;
     case DIRECTION.up:
       for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
-        ctx.drawImage(player.img, position.x, position.y-i);
+        ctx.drawImage(player.img, position.x, position.y-i, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.right:
       for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
-        ctx.drawImage(player.img, position.x-i, position.y);
+        ctx.drawImage(player.img, position.x-i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.down:
       for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
-        ctx.drawImage(player.img, position.x, position.y+i);
+        ctx.drawImage(player.img, position.x, position.y+i, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.left:
       for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
-        ctx.drawImage(player.img, position.x+i, position.y);
+        ctx.drawImage(player.img, position.x+i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     }
     ctx.globalAlpha = 1;
   } else {
-      ctx.drawImage(player.img, position.x, position.y);
+      ctx.drawImage(player.img, position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
   }
 
 }
