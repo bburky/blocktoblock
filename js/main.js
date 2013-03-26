@@ -161,33 +161,9 @@ function inputDirection(player, dir) {
 }
 
 // Update camera state data and position
-function updateCamera(time) {
-  // TODO: change the current camera position logic to track a sequece of moves
-  // if (camera.animEnd && time > camera.animEnd) {
-  //   camera.x = camera.destX;
-  //   camera.y = camera.destY;
-  // }
-  // if (camera.destX == camera.x && camera.destY == camera.y) {
-  //   camera.destX = Math.floor(Math.random() * 2) - 1;
-  //   camera.destY = Math.floor(Math.random() * 2) - 1;
-  //   camera.animStart = time;
-  //   camera.animEnd = time + Math.sqrt(Math.pow(camera.x - camera.destX, 2) + Math.pow(camera.y - camera.destY, 2)) / CAMERA_SPEED;
-  // }
-
-  // var percent = (time - camera.animStart) / (camera.animEnd - camera.animStart);
-  // var x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
-  // var y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
-
-  // if (camera.animEnd && time > camera.animEnd) {
-    x = camera.destX * BLOCK_WIDTH;
-    y = camera.destY * BLOCK_HEIGHT;
-  // } else {
-  //   x = (camera.x + (camera.destX - camera.x) * percent) * BLOCK_WIDTH;
-  //   y = (camera.y + (camera.destY - camera.y) * percent) * BLOCK_HEIGHT;
-  // }
-
-  camera.xPos = x;
-  camera.yPos = y;
+function updateCamera(time, player0Pos, player1Pos) {
+  camera.xPos = canvas.width/2 - (player0Pos.x + player1Pos.x)/2;
+  camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
 }
 
 // Render death animation to the buffer
@@ -267,7 +243,6 @@ function drawFrame(time) {
 
   // Update game state if the player hasn't died
   if (!players[0].dead && !players[1].dead ) {
-    var cameraPos = updateCamera(time);
     updateBoard(time);
     updatePlayer(players[0], time);
     updatePlayer(players[1], time);
@@ -275,6 +250,7 @@ function drawFrame(time) {
   }
   var player0Pos = updatePlayerPos(players[0], time);
   var player1Pos = updatePlayerPos(players[1], time);
+  var cameraPos = updateCamera(time, player0Pos, player1Pos);
 
   // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
