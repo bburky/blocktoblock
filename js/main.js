@@ -278,6 +278,7 @@ function drawFrame(time) {
 
   // Render the buffer and the canvas
   ctx.clearRect(0,0,buffer.width, buffer.height);
+  ctx.drawImage(tutorialBg, 0, 0);
   drawBoard();
   drawPlayer(players[0], time, player0Pos);
   drawPlayer(players[1], time, player1Pos);
@@ -307,19 +308,24 @@ function loadAssets(callback) {
     }
   }
 
-  // Load images
+  // Load player sprites
   for (var i = 0; i < players.length; i++) {
     players[i].img = new Image();
     players[i].img.src = players[i].imgSrc;
     players[i].img.onload = checkAssetsLoaded;
   }
 
+  // Load block sprites
   for (var i = 0; i < BLOCK_IMG_SRCS.length; i++) {
     blockImgs[i] = new Image();
     blockImgs[i].src = BLOCK_IMG_SRCS[i];
     blockImgs[i].onload = checkAssetsLoaded;
   }
 
+  // Load tutorial backgrouond
+  tutorialBg = new Image();
+  tutorialBg.src = TUTORIALBG_SRC;
+  tutorialBg.onload = checkAssetsLoaded;
 }
 
 // Initialization and game loop

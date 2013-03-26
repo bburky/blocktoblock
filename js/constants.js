@@ -4,6 +4,8 @@ var BLOCK_HEIGHT = 45;
 var BLOCK_STYLE = 'rgb(200,0,0)';
 var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block2.png'];
 
+var TUTORIALBG_SRC = 'img/tutorial.png';
+
 var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
 var PLAYER_SPEED = 6/1000;
@@ -17,8 +19,8 @@ var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
 var CAMERA_SPEED = 1/1000;
 
-// 2 player images, 2 block images, (later background and audio too)
-var TOTAL_ASSETS = 4;
+// 2 player images, block images, and background (later audio too)
+var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
@@ -36,6 +38,7 @@ var DIRECTION = {
 
 // Canvas and state variables
 var blockImgs = [];
+var tutorialBg;
 
 var wrapper = document.getElementById('game-wrapper');
 
@@ -45,8 +48,8 @@ var canvasCtx = canvas.getContext('2d');
 
 // Create a second buffer to be blited onto the canvas
 var buffer = document.createElement("canvas");
-buffer.width = 1000;
-buffer.height = 1000;
+buffer.width = 4000;
+buffer.height = 2000;
 var ctx = buffer.getContext('2d');
 
 var fps = 0.0;
@@ -54,18 +57,18 @@ var lastUpdate;
 var started = false;
 // Player state data
 var players = [{
-    x: 2,
-    y: 1,
-    destX: 2,
-    destY: 1,
+    x: 8,
+    y: 8,
+    destX: 8,
+    destY: 8,
     dir: DIRECTION.none,
     dead: false,
     imgSrc: 'img/player1.png'
   }, {
-    x: 4,
-    y: 1,
-    destX: 4,
-    destY: 1,
+    x: 12,
+    y: 8,
+    destX: 12,
+    destY: 8,
     dir: DIRECTION.none,
     dead: false,
     imgSrc: 'img/player2.png'
