@@ -214,7 +214,38 @@ function drawPlayer(player, time, position) {
   // ctx.fillStyle = PLAYER_STYLE;
   // ctx.fillRect(position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
 
-  ctx.drawImage(player.img, position.x, position.y);
+
+  if (player.dir != DIRECTION.none) {
+    ctx.globalAlpha = 1.25/MOTION_BLUR_STEPS;
+    switch(player.dir) {
+    // case DIRECTION.none:
+    //   break;
+    case DIRECTION.up:
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
+        ctx.drawImage(player.img, position.x, position.y-i);
+      }
+      break;
+    case DIRECTION.right:
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
+        ctx.drawImage(player.img, position.x-i, position.y);
+      }
+      break;
+    case DIRECTION.down:
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
+        ctx.drawImage(player.img, position.x, position.y+i);
+      }
+      break;
+    case DIRECTION.left:
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
+        ctx.drawImage(player.img, position.x+i, position.y);
+      }
+      break;
+    }
+    ctx.globalAlpha = 1;
+  } else {
+      ctx.drawImage(player.img, position.x, position.y);
+  }
+
 }
 
 // Render the buffer to the canvas

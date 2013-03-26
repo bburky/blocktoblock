@@ -6,8 +6,9 @@ var BLOCK_IMG_SRCS = ['block1.png', 'block2.png'];
 
 var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
-var PLAYER_STYLE = 'rgb(0,0,0)';
 var PLAYER_SPEED = 6/1000;
+
+var MOTION_BLUR_STEPS = 10;
 
 var BACKGROUND_STYLE = 'rgb(255,255,255)';
 var TEXT_FONT = '50pt Helvetica, Arial';
