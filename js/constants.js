@@ -8,7 +8,7 @@ var TUTORIALBG_SRC = 'img/tutorial.png';
 
 var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
-var PLAYER_SPEED = 6/1000;
+var PLAYER_SPEED = 10/1000;
 
 var MOTION_BLUR_STEPS = 10;
 
