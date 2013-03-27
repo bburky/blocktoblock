@@ -44,6 +44,8 @@ function drawBoard() {
 function updateBoard(time) {
   for (var i = 0; i < players.length; i++) {
     if (boardRects[[players[i].x, players[i].y]] === 1) {
+      // Hit a block
+      hitSnd.play();
       boardRects[[players[i].x, players[i].y]] = 2;
     }
   }
@@ -307,15 +309,24 @@ function loadAssets(callback) {
   tutorialBg = new Image();
   tutorialBg.src = TUTORIALBG_SRC;
   tutorialBg.onload = checkAssetsLoaded;
+
+  // Loud sound effects
+  createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
+  createjs.Sound.registerSound(SND_HIT_SRC);
 }
 
 // Initialization and game loop
 function initGame() {
   restartGame();
 
+  hitSnd = createjs.Sound.createInstance(SND_HIT_SRC);
+
   // Set up the main game loop to run
   // Note: a polyfill is used to allow this to work cross-browser
   window.requestAnimationFrame(drawFrame);
+
+  // init soundjs
+  createjs.Sound.initializeDefaultPlugins();
 }
 
 function restartGame() {

@@ -22,8 +22,10 @@ var CAMERA_SPEED = 1/1000;
 var CAMERA_X_OFFSET = 1080/2;
 var CAMERA_Y_OFFSET = 1920/2;
 
-// 2 player images, block images, and background (later audio too)
-var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1;
+var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
+
+// 2 player images, block images, and background and 1 sound effect
+var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 1;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
@@ -42,6 +44,8 @@ var DIRECTION = {
 // Canvas and state variables
 var blockImgs = [];
 var tutorialBg;
+
+var hitSnd;
 
 var wrapper = document.getElementById('game-wrapper');
 
