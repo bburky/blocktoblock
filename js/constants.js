@@ -2,7 +2,7 @@
 var BLOCK_WIDTH = 45;
 var BLOCK_HEIGHT = 45;
 var BLOCK_STYLE = 'rgb(200,0,0)';
-var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block2.png'];
+var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block2.png', 'img/block3.png', 'img/block4.png', 'img/block5.png', 'img/block6.png', 'img/block7.png', 'img/block8.png'];
 
 var TUTORIALBG_SRC = 'img/tutorial.png';
 

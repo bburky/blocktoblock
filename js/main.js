@@ -33,7 +33,7 @@ function drawBoard() {
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1) {
-        var hash = (x+y) % 2;
+        var hash = (x+y) % BLOCK_IMG_SRCS.length;
         ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
