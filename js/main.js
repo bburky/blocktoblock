@@ -422,33 +422,43 @@ document.addEventListener('keydown', function(e) {
       cancelFullScreen(); // explicitly go out of fs.
       break;
     case 70: // f
+      e.preventDefault();
       enterFullscreen();
       break;
     case 87: // w
+      e.preventDefault();
       inputDirection(players[0], DIRECTION.up);
       break;
     case 68: // d
+      e.preventDefault();
       inputDirection(players[0], DIRECTION.right);
       break;
     case 83: // s
+      e.preventDefault();
       inputDirection(players[0], DIRECTION.down);
       break;
     case 65: // a
+      e.preventDefault();
       inputDirection(players[0], DIRECTION.left);
       break;
     case 38: // up
+      e.preventDefault();
       inputDirection(players[1], DIRECTION.up);
       break;
     case 39: // right
+      e.preventDefault();
       inputDirection(players[1], DIRECTION.right);
       break;
     case 40: // down
+      e.preventDefault();
       inputDirection(players[1], DIRECTION.down);
       break;
     case 37: // left
+      e.preventDefault();
       inputDirection(players[1], DIRECTION.left);
       break;
     case 32: // space
+      e.preventDefault();
       startPause();
       break;
   }
@@ -459,6 +469,7 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('keyup', function(e) {
   switch (e.keyCode) {
     case 32: // space
+      e.preventDefault();
       endPause();
       break;
   }
