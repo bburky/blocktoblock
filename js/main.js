@@ -121,6 +121,8 @@ function updatePlayer(player, time) {
     player.animEnd = time + count / PLAYER_SPEED;
     player.destX = x;
     player.destY = y;
+
+    collidePlayers();
   } else if ((!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
     (player.dir != DIRECTION.none)) {
     // After moving, unset the current direction
@@ -251,7 +253,6 @@ function drawFrame(time) {
     updateBoard(time);
     updatePlayer(players[0], time);
     updatePlayer(players[1], time);
-    collidePlayers();
   }
   var player0Pos = updatePlayerPos(players[0], time);
   var player1Pos = updatePlayerPos(players[1], time);
