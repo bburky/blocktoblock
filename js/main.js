@@ -215,7 +215,8 @@ function drawDeath(player, time) {
 
 // Check if player has won
 function checkWin(time) {
-  if (boardRects[[players[0].x, players[0].y]] === 10 && boardRects[[players[1].x, players[1].y]] === 10) {
+  if (boardRects[[players[0].x, players[0].y]] === 10 && boardRects[[players[1].x, players[1].y]] === 10 &&
+    !(players[0].x == players[1].x && players[1].y == players[0].y)) {
     wonGame = true;
     winAnimStart = time;
     winAnimEnd = time + 1 / DEATH_SPEED;
