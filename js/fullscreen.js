@@ -10,8 +10,8 @@ function onFullScreenEnter() {
   wrapper.onwebkitfullscreenchange = onFullScreenExit;
   wrapper.onmozfullscreenchange = onFullScreenExit;
   setTimeout(function() {
-    canvas.width = document.width;
-    canvas.height = document.height;
+    canvas.width = screen.width;
+    canvas.height = screen.height;
 
     loadAssets(initGame);
   }, 1000);
