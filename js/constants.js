@@ -1,29 +1,27 @@
 // Constants
+
 var BLOCK_WIDTH = 45;
 var BLOCK_HEIGHT = 45;
-var BLOCK_STYLE = 'rgb(200,0,0)';
 var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block2.png', 'img/block3.png', 'img/block4.png', 'img/block5.png', 'img/block6.png', 'img/block7.png', 'img/block8.png'];
 
 var TUTORIALBG_SRC = 'img/tutorial.png';
 
-var PLAYER_WIDTH = 15;
-var PLAYER_HEIGHT = 15;
+var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
+var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
+
+// Currently unused
+var BACKGROUND_STYLE = 'rgb(255,255,255)';
+
+var TEXT_FONT = '50pt Helvetica, Arial';
+var SMALL_TEXT_FONT = '12pt Helvetica, Arial';
+var TEXT_STYLE = 'rgb(0,0,0)';
+
 var PLAYER_SPEED = 10/1000;
 
 var MOTION_BLUR_STEPS = 20;
 
-var BACKGROUND_STYLE = 'rgb(255,255,255)';
-var TEXT_FONT = '50pt Helvetica, Arial';
-var SMALL_TEXT_FONT = '12pt Helvetica, Arial';
-var TEXT_STYLE = 'rgb(0,0,0)';
-var CAMERA_WIDTH = 10;
-var CAMERA_HEIGHT = 10;
-var CAMERA_SPEED = 1/1000;
 var CAMERA_X_OFFSET = 1080/2;
 var CAMERA_Y_OFFSET = 1920/2;
-
-var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
-var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
 
 // 2 player images, block images, background image and 2 sound effects
 var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 2;
@@ -47,19 +45,6 @@ var DIRECTION = {
 
 
 // Canvas and state variables
-var blockImgs = [];
-var tutorialBg;
-
-var hitSnd;
-var hitPlayerSnd;
-
-var gamePaused = false;
-
-var wonGame = false;
-var winAnimStart;
-var winAnimEnd;
-
-var wrapper = document.getElementById('game-wrapper');
 
 // This is the visible on screen canvas
 var canvas = document.getElementById('canvas');
@@ -71,9 +56,31 @@ buffer.width = 4000;
 buffer.height = 3000;
 var ctx = buffer.getContext('2d');
 
+// Div wrapper element of canvas
+var wrapper = document.getElementById('game-wrapper');
+
+// Image instances
+var blockImgs = [];
+var tutorialBg;
+
+// Sound instances
+var hitSnd;
+var hitPlayerSnd;
+
+// Are blocks frozen
+var gamePaused = false;
+
+// Has the game been won
+var wonGame = false;
+var winAnimStart;
+var winAnimEnd;
+
+
+// FPS data
 var fps = 0.0;
 var lastUpdate;
 var started = false;
+
 // Player state data
 var players = [{
     x: 8,
@@ -92,6 +99,7 @@ var players = [{
     dead: false,
     imgSrc: 'img/player2.png'
   }];
+
 // Camera position state data
 var camera = {
   x: 0,
@@ -102,3 +110,5 @@ var camera = {
 
 // Actual board. A dictionary with coordinate keys
 var boardRects;
+
+// Board array in board.js with initialization data

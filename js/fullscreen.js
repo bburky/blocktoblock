@@ -32,7 +32,7 @@ function enterFullscreen() {
       wrapper.requestFullscreen();
     }
   }
-  
+
   // TODO: use onFullScreenEnter(), not working in FF though
   canvas.width = screen.width;
   canvas.height = screen.height;

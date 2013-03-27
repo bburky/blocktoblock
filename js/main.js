@@ -1,17 +1,3 @@
-// TODO: complete board generation
-// Generate sequence of n moves starting at (x, y) as an initial position
-function generateSequence(x, y, n) {
-  var curX = x;
-  var curY = y;
-  var seq = [];
-
-  for (var i = 0; i < n; i++) {
-    nextX = Math.floor(Math.random() * 4) - 2;
-    nextY = Math.floor(Math.random() * 4) - 2;
-    seq.push([x,y]);
-  }
-}
-
 // Generate the actual board from the temporary array
 function generateBoardRects() {
   var rects = {};
@@ -29,7 +15,6 @@ function generateBoardRects() {
 
 // Render the board onto the buffer
 function drawBoard() {
-  ctx.fillStyle = BLOCK_STYLE;
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1 || boardRects[[x,y]] === 8) {
@@ -175,6 +160,7 @@ function updateCamera(time, player0Pos, player1Pos) {
   camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
 }
 
+// Triggered when holding spacebar to freeze sliding blocks
 function startPause() {
   if (!gamePaused) {
     gamePaused = true;
@@ -186,6 +172,7 @@ function startPause() {
   }
 }
 
+// Triggered when releasing spacebar to unfreeze sliding blocks
 function endPause() {
   gamePaused = false;
   for (var i = 0; i < players.length; i++) {
@@ -299,8 +286,6 @@ function drawPlayer(player, time, position) {
 
 // Render the buffer to the canvas
 function drawCamera(time) {
-  // canvasCtx.fillStyle = BACKGROUND_STYLE;
-  // canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
   canvasCtx.drawImage(tutorialBg, CAMERA_X_OFFSET - camera.xPos, CAMERA_Y_OFFSET - camera.yPos, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
 }
@@ -344,7 +329,7 @@ function drawFrame(time) {
   } else if (players[1].dead) {
     drawDeath(players[1], time);
   }
-  
+
   // FPS calculation
   var thisFrameFPS = 1000 / (time - lastUpdate);
   fps = thisFrameFPS;
@@ -396,19 +381,20 @@ function loadAssets(callback) {
 
 // Initialization and game loop
 function initGame() {
+  // Setup board and player blocks
   restartGame();
 
+  // Instantiate sounds
+  createjs.Sound.initializeDefaultPlugins();
   hitSnd = createjs.Sound.createInstance(SND_HIT_SRC);
   hitPlayerSnd = createjs.Sound.createInstance(SND_HIT_PLAYER_SRC);
 
   // Set up the main game loop to run
   // Note: a polyfill is used to allow this to work cross-browser
   window.requestAnimationFrame(drawFrame);
-
-  // init soundjs
-  createjs.Sound.initializeDefaultPlugins();
 }
 
+// Start or restart game. Setup level's board and player blocks
 function restartGame() {
   boardRects = generateBoardRects();
 }
@@ -465,7 +451,7 @@ document.addEventListener('keydown', function(e) {
 }, false);
 
 
-// Listen for keyup on space
+// Listen for keyup on space for unpause
 document.addEventListener('keyup', function(e) {
   switch (e.keyCode) {
     case 32: // space
@@ -475,6 +461,6 @@ document.addEventListener('keyup', function(e) {
   }
 }, false);
 
-// Load assets and init game
-
+// Start the game
+// First load assets, then initialize and start
 loadAssets(initGame);
