@@ -51,10 +51,12 @@ function updateBoard(time) {
   }
 }
 
+// Check if player blocks are colliding
 function collidePlayers() {
   if (players[0].destX == players[1].destX && players[0].destY == players[1].destY && players[0].dir != players[1].dir) {
     players[0].dir = DIRECTION.none;
     players[1].dir = DIRECTION.none;
+    hitPlayerSnd.play();
   }
 }
 
@@ -313,6 +315,9 @@ function loadAssets(callback) {
   // Loud sound effects
   createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
   createjs.Sound.registerSound(SND_HIT_SRC);
+
+  createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
+  createjs.Sound.registerSound(SND_HIT_PLAYER_SRC);
 }
 
 // Initialization and game loop
@@ -320,6 +325,7 @@ function initGame() {
   restartGame();
 
   hitSnd = createjs.Sound.createInstance(SND_HIT_SRC);
+  hitPlayerSnd = createjs.Sound.createInstance(SND_HIT_PLAYER_SRC);
 
   // Set up the main game loop to run
   // Note: a polyfill is used to allow this to work cross-browser

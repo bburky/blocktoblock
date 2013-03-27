@@ -23,9 +23,10 @@ var CAMERA_X_OFFSET = 1080/2;
 var CAMERA_Y_OFFSET = 1920/2;
 
 var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
+var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
 
-// 2 player images, block images, and background and 1 sound effect
-var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 1;
+// 2 player images, block images, background image and 2 sound effects
+var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 2;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
@@ -46,6 +47,7 @@ var blockImgs = [];
 var tutorialBg;
 
 var hitSnd;
+var hitPlayerSnd;
 
 var wrapper = document.getElementById('game-wrapper');
 
