@@ -391,8 +391,6 @@ function loadAssets(callback) {
   // Loud sound effects
   createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
   createjs.Sound.registerSound(SND_HIT_SRC);
-
-  createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
   createjs.Sound.registerSound(SND_HIT_PLAYER_SRC);
 }
 
