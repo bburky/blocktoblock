@@ -337,14 +337,14 @@ function drawFrame(time) {
   drawPlayer(players[0], time, player0Pos);
   drawPlayer(players[1], time, player1Pos);
   drawCamera(time);
-  if (players[0].dead) {
+  if (wonGame) {
+    drawWin(time);
+  } else if (players[0].dead) {
     drawDeath(players[0], time);
   } else if (players[1].dead) {
     drawDeath(players[1], time);
-  } else if (wonGame) {
-    drawWin(time);
   }
-
+  
   // FPS calculation
   var thisFrameFPS = 1000 / (time - lastUpdate);
   fps = thisFrameFPS;
