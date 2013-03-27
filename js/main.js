@@ -270,22 +270,22 @@ function drawPlayer(player, time, position) {
     // case DIRECTION.none:
     //   break;
     case DIRECTION.up:
-      for (var i = MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS; i++) {
+      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
         ctx.drawImage(player.img, position.x, position.y-i, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.right:
-      for (var i = MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS; i++) {
+      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
         ctx.drawImage(player.img, position.x-i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.down:
-      for (var i = MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS; i++) {
+      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
         ctx.drawImage(player.img, position.x, position.y+i, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.left:
-      for (var i = MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS; i++) {
+      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
         ctx.drawImage(player.img, position.x+i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT)
       }
       break;
