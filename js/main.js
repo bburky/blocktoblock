@@ -477,4 +477,4 @@ document.addEventListener('keyup', function(e) {
 
 // Load assets and init game
 
-// loadAssets(initGame);
+loadAssets(initGame);
