@@ -10,7 +10,7 @@ var PLAYER_WIDTH = 15;
 var PLAYER_HEIGHT = 15;
 var PLAYER_SPEED = 10/1000;
 
-var MOTION_BLUR_STEPS = 10;
+var MOTION_BLUR_STEPS = 20;
 
 var BACKGROUND_STYLE = 'rgb(255,255,255)';
 var TEXT_FONT = '50pt Helvetica, Arial';
