@@ -159,8 +159,7 @@ function updatePlayerPos(player, time) {
 
 // Return true if in bounds of screen
 function boundsCheck(x, y) {
-  // TODO: check if off screen
-  return !((x > 100 || x < -100) || (y > 100 || y < -100));
+  return !((x > board[0].length || x < 0) || (y > board.length || y < 0));
 }
 
 // Called by key listener to input directions
