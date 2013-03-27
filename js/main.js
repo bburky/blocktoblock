@@ -466,12 +466,6 @@ document.addEventListener('keyup', function(e) {
   }
 }, false);
 
-// Write FPS data to the page
-var fpsOut = document.getElementById('fps');
-setInterval(function(){
-  fpsOut.innerHTML = fps.toFixed(1) + "fps";
-}, 100);
-
 // Load assets and init game
 
 // loadAssets(initGame);
