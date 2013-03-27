@@ -9,12 +9,8 @@ function onFullScreenEnter() {
   console.log("Entered fullscreen!");
   wrapper.onwebkitfullscreenchange = onFullScreenExit;
   wrapper.onmozfullscreenchange = onFullScreenExit;
-  setTimeout(function() {
-    canvas.width = screen.width;
-    canvas.height = screen.height;
-
-    loadAssets(initGame);
-  }, 1000);
+  // canvas.width = screen.width;
+  // canvas.height = screen.height;
 }
 
 // Called whenever the browser exits fullscreen.
@@ -36,6 +32,10 @@ function enterFullscreen() {
       wrapper.requestFullscreen();
     }
   }
+  
+  // TODO: use onFullScreenEnter(), not working in FF though
+  canvas.width = screen.width;
+  canvas.height = screen.height;
 }
 
 function exitFullscreen() {
