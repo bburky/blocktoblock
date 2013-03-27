@@ -14,7 +14,7 @@ var MOTION_BLUR_STEPS = 20;
 
 var BACKGROUND_STYLE = 'rgb(255,255,255)';
 var TEXT_FONT = '50pt Helvetica, Arial';
-var FPS_TEXT_FONT = '12pt Helvetica, Arial';
+var SMALL_TEXT_FONT = '12pt Helvetica, Arial';
 var TEXT_STYLE = 'rgb(0,0,0)';
 var CAMERA_WIDTH = 10;
 var CAMERA_HEIGHT = 10;
@@ -30,6 +30,10 @@ var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 2;
 
 var DEATH_STYLE_FRAGMENT = 'rgba(200,0,0,';
 var DEATH_SPEED = 1.5/1000;
+
+var WIN_STYLE_FRAGMENT = 'rgba(0,0,200,';
+var WIN_SPEED = 1.5/1000;
+
 var KEYPRESS_DELAY = 100;
 
 var DIRECTION = {
@@ -48,6 +52,10 @@ var tutorialBg;
 
 var hitSnd;
 var hitPlayerSnd;
+
+var wonGame = false;
+var winAnimStart;
+var winAnimEnd;
 
 var wrapper = document.getElementById('game-wrapper');
 

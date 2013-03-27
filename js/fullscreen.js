@@ -12,7 +12,7 @@ function onFullScreenEnter() {
   setTimeout(function() {
     canvas.width = document.width;
     canvas.height = document.height;
-  }, 300);
+  }, 700);
 }
 
 // Called whenever the browser exits fullscreen.

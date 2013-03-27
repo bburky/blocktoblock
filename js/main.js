@@ -18,8 +18,8 @@ function generateBoardRects() {
 
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (board[y][x] === 1) {
-        rects[[x,y]] = 1;
+      if (board[y][x] === 1 || board[y][x] === 8) {
+        rects[[x,y]] = board[y][x];
       }
     }
   }
@@ -32,7 +32,7 @@ function drawBoard() {
   ctx.fillStyle = BLOCK_STYLE;
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (boardRects[[x,y]] === 1) {
+      if (boardRects[[x,y]] === 1 || boardRects[[x,y]] === 8) {
         var hash = (x+y) % BLOCK_IMG_SRCS.length;
         ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
@@ -47,6 +47,10 @@ function updateBoard(time) {
       // Hit a block
       hitSnd.play();
       boardRects[[players[i].x, players[i].y]] = 2;
+    } else if (boardRects[[players[i].x, players[i].y]] === 8) {
+      // Hit a goal block
+      hitSnd.play();
+      boardRects[[players[i].x, players[i].y]] = 10;
     }
   }
 }
@@ -106,7 +110,7 @@ function updatePlayer(player, time) {
       break;
     }
 
-    if (boardRects[[x,y]] == 1) {
+    if (boardRects[[x,y]] === 1 || boardRects[[x,y]] === 8) {
       player.dir = DIRECTION.none;
     }
 
@@ -192,6 +196,54 @@ function drawDeath(player, time) {
   }
 }
 
+// Check if player has won
+function checkWin(time) {
+  if (boardRects[[players[0].x, players[0].y]] === 10 && boardRects[[players[1].x, players[1].y]] === 10) {
+    wonGame = true;
+    winAnimStart = time;
+    winAnimEnd = time + 1 / DEATH_SPEED;
+
+  }
+}
+
+// Render death animation to the buffer
+function drawWin(time) {
+  var alpha = 0.3;
+  var percent = (time - winAnimStart) / (winAnimEnd - winAnimStart);
+
+  if (time < winAnimEnd) {
+    alpha = 0.65 - Math.abs(percent - 0.65) ;
+  }
+
+  canvasCtx.fillStyle = WIN_STYLE_FRAGMENT + alpha + ')';
+  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (time >= winAnimEnd) {
+    canvasCtx.font = TEXT_FONT;
+    canvasCtx.textAlign = 'center';
+    canvasCtx.fillStyle = TEXT_STYLE;
+    canvasCtx.fillText('You Win!', canvas.width/2, canvas.height/2);
+
+    var blocks = remainingBlocks();
+    var blocksStr = blocks === 0 ? 'You collected all blocks' : 'You missed ' + blocks + 'blocks';
+    canvasCtx.font = SMALL_TEXT_FONT;
+    canvasCtx.fillText(blocksStr, canvas.width/2, canvas.height/2 + 40);
+  }
+}
+
+// Count remaining blocks on board, used for drawWin()
+function remainingBlocks() {
+  var blocks = 0;
+  for(var b in boardRects) {
+      if (boardRects.hasOwnProperty(b)) {
+        if (boardRects[b] === 1 || boardRects[b] === 8) {
+          blocks++;
+        }
+      }
+  }
+  return blocks;
+}
+
 // Draw the player onto the buffer
 function drawPlayer(player, time, position) {
   if (player.dir != DIRECTION.none) {
@@ -256,6 +308,9 @@ function drawFrame(time) {
   }
   var player0Pos = updatePlayerPos(players[0], time);
   var player1Pos = updatePlayerPos(players[1], time);
+  if (!wonGame) {
+    checkWin(time);
+  }
   updateCamera(time, player0Pos, player1Pos);
 
   // Render the buffer and the canvas
@@ -268,6 +323,8 @@ function drawFrame(time) {
     drawDeath(players[0], time);
   } else if (players[1].dead) {
     drawDeath(players[1], time);
+  } else if (wonGame) {
+    drawWin(time);
   }
 
   // FPS calculation
@@ -275,7 +332,7 @@ function drawFrame(time) {
   fps = thisFrameFPS;
   lastUpdate = time;
 
-  canvasCtx.font = FPS_TEXT_FONT;
+  canvasCtx.font = SMALL_TEXT_FONT;
   canvasCtx.textAlign = 'left';
   canvasCtx.fillStyle = TEXT_STYLE;
   canvasCtx.fillText(fps.toFixed(1) + "fps", 0, 15);
