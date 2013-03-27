@@ -444,4 +444,4 @@ setInterval(function(){
 
 // Load assets and init game
 
-loadAssets(initGame);
+// loadAssets(initGame);

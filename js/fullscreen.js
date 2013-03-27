@@ -12,7 +12,9 @@ function onFullScreenEnter() {
   setTimeout(function() {
     canvas.width = document.width;
     canvas.height = document.height;
-  }, 700);
+
+    loadAssets(initGame);
+  }, 1000);
 }
 
 // Called whenever the browser exits fullscreen.
