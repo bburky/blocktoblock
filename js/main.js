@@ -71,7 +71,7 @@ function updatePlayer(player, time) {
   // Take input for a new location
   if ((player.destX == player.x && player.destY == player.y) &&
     (!player.animStart || (time - player.animStart) > KEYPRESS_DELAY) &&
-    (player.dir != DIRECTION.none)) {
+    (player.dir != DIRECTION.none) && (!player.paused)) {
 
     switch(player.dir) {
     // case DIRECTION.none:
@@ -174,6 +174,24 @@ function inputDirection(player, dir) {
 function updateCamera(time, player0Pos, player1Pos) {
   camera.xPos = canvas.width/2 - (player0Pos.x + player1Pos.x)/2;
   camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
+}
+
+function startPause() {
+  if (!gamePaused) {
+    gamePaused = true;
+    for (var i = 0; i < players.length; i++) {
+      if (players[i].dir !== DIRECTION.none) {
+        players[i].paused = true;
+      }
+    }
+  }
+}
+
+function endPause() {
+  gamePaused = false;
+  for (var i = 0; i < players.length; i++) {
+    players[i].paused = false;
+  }
 }
 
 // Render death animation to the buffer
@@ -432,9 +450,21 @@ document.addEventListener('keydown', function(e) {
     case 37: // left
       inputDirection(players[1], DIRECTION.left);
       break;
+    case 32: // space
+      startPause();
+      break;
   }
 }, false);
 
+
+// Listen for keyup on space
+document.addEventListener('keyup', function(e) {
+  switch (e.keyCode) {
+    case 32: // space
+      endPause();
+      break;
+  }
+}, false);
 
 // Write FPS data to the page
 var fpsOut = document.getElementById('fps');

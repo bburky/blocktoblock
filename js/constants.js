@@ -53,6 +53,8 @@ var tutorialBg;
 var hitSnd;
 var hitPlayerSnd;
 
+var gamePaused = false;
+
 var wonGame = false;
 var winAnimStart;
 var winAnimEnd;
