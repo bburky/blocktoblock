@@ -225,7 +225,7 @@ function drawWin(time) {
     canvasCtx.fillText('You Win!', canvas.width/2, canvas.height/2);
 
     var blocks = remainingBlocks();
-    var blocksStr = blocks === 0 ? 'You collected all blocks' : 'You missed ' + blocks + 'blocks';
+    var blocksStr = blocks === 0 ? 'You collected all blocks' : 'You missed ' + blocks + ' blocks';
     canvasCtx.font = SMALL_TEXT_FONT;
     canvasCtx.fillText(blocksStr, canvas.width/2, canvas.height/2 + 40);
   }
