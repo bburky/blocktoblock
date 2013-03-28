@@ -9,8 +9,7 @@ var TUTORIALBG_SRC = 'img/tutorial.png';
 var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
 var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
 
-// Currently unused
-var BACKGROUND_STYLE = 'rgb(255,255,255)';
+var BACKGROUND_STYLE = 'rgb(41,171,226)';
 
 var TEXT_FONT = '50pt Helvetica, Arial';
 var SMALL_TEXT_FONT = '12pt Helvetica, Arial';
@@ -19,9 +18,6 @@ var TEXT_STYLE = 'rgb(0,0,0)';
 var PLAYER_SPEED = 10/1000;
 
 var MOTION_BLUR_STEPS = 20;
-
-var CAMERA_X_OFFSET = 1080/2;
-var CAMERA_Y_OFFSET = 1920/2;
 
 // 2 player images, block images, background image and 2 sound effects
 var TOTAL_ASSETS = 2 + BLOCK_IMG_SRCS.length + 1 + 2;

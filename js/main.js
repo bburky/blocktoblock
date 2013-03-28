@@ -284,9 +284,25 @@ function drawPlayer(player, time, position) {
 
 }
 
-// Render the buffer to the canvas
+// Render the background and buffer to the canvas
 function drawCamera(time) {
-  canvasCtx.drawImage(tutorialBg, CAMERA_X_OFFSET - camera.xPos, CAMERA_Y_OFFSET - camera.yPos, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+  // Fill background of canvas with background color
+  canvasCtx.fillStyle = BACKGROUND_STYLE;
+  canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Clamp position values into bounds of background image
+  // TODO: there's probably a less ugly way to do this that uses less repetition
+  var sx = Math.max(0, Math.min(-camera.xPos, tutorialBg.width));
+  var sy = Math.max(0, Math.min(-camera.yPos, tutorialBg.height));
+  var w = Math.min(canvas.width - Math.max(0, camera.xPos), tutorialBg.width - sx);
+  var h = Math.min(canvas.height - Math.max(0, camera.yPos), tutorialBg.height - sy);
+  var dx = sx + canvas.width > tutorialBg.width ? 0 : Math.max(0, canvas.width - w);
+  var dy = sy + canvas.height > tutorialBg.height ? 0 : Math.max(0, canvas.height - h);
+
+  // Render the calculated portion of the transparent background image
+  canvasCtx.drawImage(tutorialBg, sx, sy, w, h, dx, dy, w, h);
+
+  // Draw the rest of the game over the background
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
 }
 
