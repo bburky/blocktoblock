@@ -37,7 +37,7 @@ var levels = [
     ]
   },
   {
-    backgroundImgSrc: 'img/tutorial.png',
+    backgroundImgSrc: 'img/clear.gif',
     backgroundStyle: 'rgb(41,171,200)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -55,7 +55,7 @@ var levels = [
     ]
   },
   {
-    backgroundImgSrc: 'img/tutorial.png',
+    backgroundImgSrc: 'img/clear.gif',
     backgroundStyle: 'rgb(41,171,180)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
