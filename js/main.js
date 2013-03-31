@@ -197,6 +197,9 @@ function drawDeath(player, time) {
     canvasCtx.textAlign = 'center';
     canvasCtx.fillStyle = TEXT_STYLE;
     canvasCtx.fillText('Game Over', canvas.width/2, canvas.height/2);
+
+    canvasCtx.font = SMALL_TEXT_FONT;
+    canvasCtx.fillText('Press R to restart level', canvas.width/2, canvas.height/2 + 40);
   }
 }
 
@@ -235,6 +238,13 @@ function drawWin(time) {
     var blocksStr = blocks === 0 ? 'You collected all blocks' : 'You missed ' + blocks + ' blocks';
     canvasCtx.font = SMALL_TEXT_FONT;
     canvasCtx.fillText(blocksStr, canvas.width/2, canvas.height/2 + 40);
+
+    if (level + 1 < levels.length) {
+      canvasCtx.fillText('Press enter to start next level', canvas.width/2, canvas.height/2 + 80);
+    } else {
+      canvasCtx.fillText("You've finished all the levels", canvas.width/2, canvas.height/2 + 80);
+      canvasCtx.fillText("Press enter to restart game", canvas.width/2, canvas.height/2 + 95);
+    }
   }
 }
 
@@ -441,13 +451,19 @@ function restartLevel() {
   gamePaused = false;
 }
 
+function tryNextLevel() {
+  if (wonGame) {
+    level = (level + 1) % levels.length;
+    restartLevel();
+  }
+}
+
 // Listen for keypresses for movement and fullscreen
 document.addEventListener('keydown', function(e) {
   switch (e.keyCode) {
-    case 13: // ENTER. ESC should also take you out of fullscreen by default.
+    case 13: // ENTER
       e.preventDefault();
-      // document.cancelFullScreen(); // explicitly go out of fs.
-      cancelFullScreen(); // explicitly go out of fs.
+      tryNextLevel();
       break;
     case 70: // f
       e.preventDefault();
