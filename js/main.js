@@ -289,20 +289,20 @@ function drawPlayer(player, time, position) {
 // Render the background and buffer to the canvas
 function drawCamera(time) {
   // Fill background of canvas with background color
-  canvasCtx.fillStyle = BACKGROUND_STYLE;
+  canvasCtx.fillStyle = backgroundStyle;
   canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Clamp position values into bounds of background image
   // TODO: there's probably a less ugly way to do this that uses less repetition
-  var sx = Math.max(0, Math.min(-camera.xPos, tutorialBg.width));
-  var sy = Math.max(0, Math.min(-camera.yPos, tutorialBg.height));
-  var w = Math.min(canvas.width - Math.max(0, camera.xPos), tutorialBg.width - sx);
-  var h = Math.min(canvas.height - Math.max(0, camera.yPos), tutorialBg.height - sy);
-  var dx = sx + canvas.width > tutorialBg.width ? 0 : Math.max(0, canvas.width - w);
-  var dy = sy + canvas.height > tutorialBg.height ? 0 : Math.max(0, canvas.height - h);
+  var sx = Math.max(0, Math.min(-camera.xPos, backgroundImg.width));
+  var sy = Math.max(0, Math.min(-camera.yPos, backgroundImg.height));
+  var w = Math.min(canvas.width - Math.max(0, camera.xPos), backgroundImg.width - sx);
+  var h = Math.min(canvas.height - Math.max(0, camera.yPos), backgroundImg.height - sy);
+  var dx = sx + canvas.width > backgroundImg.width ? 0 : Math.max(0, canvas.width - w);
+  var dy = sy + canvas.height > backgroundImg.height ? 0 : Math.max(0, canvas.height - h);
 
   // Render the calculated portion of the transparent background image
-  canvasCtx.drawImage(tutorialBg, sx, sy, w, h, dx, dy, w, h);
+  canvasCtx.drawImage(backgroundImg, sx, sy, w, h, dx, dy, w, h);
 
   // Draw the rest of the game over the background
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
@@ -310,15 +310,6 @@ function drawCamera(time) {
 
 // Main game loop
 function drawFrame(time) {
-  // Setup code for timers
-  if (!lastUpdate) {
-    // TODO: make this less hacky
-    lastUpdate = time + 1;
-    players[0].animStart = time + 1;
-    players[0].animEnd = time + 2;
-    players[1].animStart = time + 1;
-    players[1].animEnd = time + 2;
-  }
   var delta = lastUpdate - time;
 
   // Update game state if the player hasn't died
@@ -365,6 +356,7 @@ function drawFrame(time) {
 function loadAssets(callback) {
   var assetsLoaded = 0;
 
+  // Callback onload of each asset to check if loading is complete
   function checkAssetsLoaded() {
     assetsLoaded++;
     if (assetsLoaded == TOTAL_ASSETS) {
@@ -386,10 +378,12 @@ function loadAssets(callback) {
     blockImgs[i].onload = checkAssetsLoaded;
   }
 
-  // Load tutorial backgrouond
-  tutorialBg = new Image();
-  tutorialBg.src = TUTORIALBG_SRC;
-  tutorialBg.onload = checkAssetsLoaded;
+  // Load level backgrouonds
+  for (var i = 0; i < levels.length; i++) {
+    levels[i].backgroundImg = new Image();
+    levels[i].backgroundImg.src = levels[i].backgroundImgSrc;
+    levels[i].backgroundImg.onload = checkAssetsLoaded;
+  }
 
   // Loud sound effects
   createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
@@ -407,6 +401,14 @@ function initGame() {
   hitSnd = createjs.Sound.createInstance(SND_HIT_SRC);
   hitPlayerSnd = createjs.Sound.createInstance(SND_HIT_PLAYER_SRC);
 
+  // Setup code for timers
+  // init with fake values
+  lastUpdate = 1;
+  players[0].animStart = 1;
+  players[0].animEnd = 2;
+  players[1].animStart = 1;
+  players[1].animEnd = 2;
+
   // Set up the main game loop to run
   // Note: a polyfill is used to allow this to work cross-browser
   window.requestAnimationFrame(drawFrame);
@@ -414,7 +416,29 @@ function initGame() {
 
 // Start or restart game. Setup level's board and player blocks
 function restartGame() {
+  level = 0;
+  restartLevel();
+}
+
+function restartLevel() {
+  board = levels[level].board;
   boardRects = generateBoardRects();
+
+  backgroundStyle = levels[level].backgroundStyle;
+  backgroundImg = levels[level].backgroundImg;
+
+  players[0].x = players[0].destX = levels[level].startingPositions[0][0];
+  players[0].y = players[0].destY = levels[level].startingPositions[0][1];
+  players[0].dir = DIRECTION.none;
+  players[0].dead = false;
+
+  players[1].x = players[1].destX = levels[level].startingPositions[1][0];
+  players[1].y = players[1].destY = levels[level].startingPositions[1][1];
+  players[1].dir = DIRECTION.none;
+  players[1].dead = false;
+
+  wonGame = false;
+  gamePaused = false;
 }
 
 // Listen for keypresses for movement and fullscreen
@@ -464,6 +488,10 @@ document.addEventListener('keydown', function(e) {
     case 32: // space
       e.preventDefault();
       startPause();
+      break;
+    case 82: // r
+      e.preventDefault();
+      restartLevel();
       break;
   }
 }, false);
