@@ -17,9 +17,11 @@ function generateBoardRects() {
 function drawBoard() {
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (boardRects[[x,y]] === 1 || boardRects[[x,y]] === 8) {
+      if (boardRects[[x,y]] === 1) {
         var hash = (x+y) % BLOCK_IMG_SRCS.length;
         ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+      } else if (boardRects[[x,y]] === 8) {
+        ctx.drawImage(blockGoalImg, x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
   }
@@ -387,6 +389,11 @@ function loadAssets(callback) {
     blockImgs[i].src = BLOCK_IMG_SRCS[i];
     blockImgs[i].onload = checkAssetsLoaded;
   }
+
+  // Load goal block sprite
+  blockGoalImg = new Image();
+  blockGoalImg.src = BLOCK_GOAL_IMG_SRC;
+  blockGoalImg.onload = checkAssetsLoaded;
 
   // Load level backgrouonds
   for (var i = 0; i < levels.length; i++) {

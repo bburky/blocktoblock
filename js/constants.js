@@ -2,7 +2,8 @@
 
 var BLOCK_WIDTH = 45;
 var BLOCK_HEIGHT = 45;
-var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block3.png', 'img/block5.png', 'img/block7.png'];
+var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block5.png', 'img/block7.png'];
+var BLOCK_GOAL_IMG_SRC = 'img/blockGoal.png';
 
 var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
 var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
@@ -53,6 +54,7 @@ var wrapper = document.getElementById('game-wrapper');
 
 // Image instances
 var blockImgs = [];
+var blockGoalImg;
 var backgoundImg;
 var backgroundStyle;
 
