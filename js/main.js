@@ -306,15 +306,18 @@ function drawCamera(time) {
 
   // Clamp position values into bounds of background image
   // TODO: there's probably a less ugly way to do this that uses less repetition
-  var sx = Math.max(0, Math.min(-camera.xPos, backgroundImg.width));
-  var sy = Math.max(0, Math.min(-camera.yPos, backgroundImg.height));
-  var w = Math.min(canvas.width - Math.max(0, camera.xPos), backgroundImg.width - sx);
-  var h = Math.min(canvas.height - Math.max(0, camera.yPos), backgroundImg.height - sy);
-  var dx = sx + canvas.width > backgroundImg.width ? 0 : Math.max(0, canvas.width - w);
-  var dy = sy + canvas.height > backgroundImg.height ? 0 : Math.max(0, canvas.height - h);
+  //var sx = Math.max(0, Math.min(-camera.xPos, backgroundImg.width));
+  //var sy = Math.max(0, Math.min(-camera.yPos, backgroundImg.height));
+  //var w = Math.min(canvas.width - Math.max(0, camera.xPos), backgroundImg.width - sx);
+  //var h = Math.min(canvas.height - Math.max(0, camera.yPos), backgroundImg.height - sy);
+  //var dx = sx + canvas.width > backgroundImg.width ? 0 : Math.max(0, canvas.width - w);
+  //var dy = sy + canvas.height > backgroundImg.height ? 0 : Math.max(0, canvas.height - h);
 
   // Render the calculated portion of the transparent background image
-  canvasCtx.drawImage(backgroundImg, sx, sy, w, h, dx, dy, w, h);
+  //canvasCtx.drawImage(backgroundImg, sx, sy, w, h, dx, dy, w, h);
+
+  // TODO: replace this with working background calculations
+  canvasCtx.drawImage(backgroundImg, camera.xPos, camera.yPos);
 
   // Draw the rest of the game over the background
   canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
