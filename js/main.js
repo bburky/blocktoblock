@@ -19,9 +19,9 @@ function drawBoard() {
     for (var x = 0; x < board[y].length; x++) {
       if (boardRects[[x,y]] === 1) {
         var hash = (x+y) % BLOCK_IMG_SRCS.length;
-        ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(blockImgs[hash], x*BLOCK_WIDTH + 2*BLOCK_WIDTH, y*BLOCK_HEIGHT + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       } else if (boardRects[[x,y]] === 8) {
-        ctx.drawImage(blockGoalImg, x*BLOCK_WIDTH, y*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(blockGoalImg, x*BLOCK_WIDTH + 2*BLOCK_WIDTH, y*BLOCK_HEIGHT + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
     }
   }
@@ -272,28 +272,28 @@ function drawPlayer(player, time, position) {
     //   break;
     case DIRECTION.up:
       for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
-        ctx.drawImage(player.img, position.x, position.y-i, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(player.img, position.x + 2*BLOCK_WIDTH, position.y-i + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.right:
       for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
-        ctx.drawImage(player.img, position.x-i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(player.img, position.x-i + 2*BLOCK_WIDTH, position.y + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.down:
       for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
-        ctx.drawImage(player.img, position.x, position.y+i, BLOCK_WIDTH, BLOCK_HEIGHT);
+        ctx.drawImage(player.img, position.x + 2*BLOCK_WIDTH, position.y+i + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.left:
       for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
-        ctx.drawImage(player.img, position.x+i, position.y, BLOCK_WIDTH, BLOCK_HEIGHT)
+        ctx.drawImage(player.img, position.x+i + 2*BLOCK_WIDTH, position.y + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT)
       }
       break;
     }
     ctx.globalAlpha = 1;
   } else {
-      ctx.drawImage(player.img, position.x, position.y, BLOCK_WIDTH, BLOCK_HEIGHT);
+      ctx.drawImage(player.img, position.x + 2*BLOCK_WIDTH, position.y + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
   }
 
 }
@@ -320,7 +320,7 @@ function drawCamera(time) {
   canvasCtx.drawImage(backgroundImg, camera.xPos, camera.yPos);
 
   // Draw the rest of the game over the background
-  canvasCtx.drawImage(buffer, camera.xPos, camera.yPos);
+  canvasCtx.drawImage(buffer, camera.xPos - 2*BLOCK_WIDTH, camera.yPos - 2*BLOCK_HEIGHT);
 }
 
 // Main game loop
