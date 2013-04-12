@@ -271,22 +271,22 @@ function drawPlayer(player, time, position) {
     // case DIRECTION.none:
     //   break;
     case DIRECTION.up:
-      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
+      for (var i = -MOTION_BLUR_STEPS; i < 0; i++) {
         ctx.drawImage(player.img, position.x + 2*BLOCK_WIDTH, position.y-i + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.right:
-      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
         ctx.drawImage(player.img, position.x-i + 2*BLOCK_WIDTH, position.y + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.down:
-      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
+      for (var i = -MOTION_BLUR_STEPS; i < 0; i++) {
         ctx.drawImage(player.img, position.x + 2*BLOCK_WIDTH, position.y+i + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT);
       }
       break;
     case DIRECTION.left:
-      for (var i = -MOTION_BLUR_STEPS/2; i < MOTION_BLUR_STEPS/2; i++) {
+      for (var i = 0; i < MOTION_BLUR_STEPS; i++) {
         ctx.drawImage(player.img, position.x+i + 2*BLOCK_WIDTH, position.y + 2*BLOCK_HEIGHT, BLOCK_WIDTH, BLOCK_HEIGHT)
       }
       break;
@@ -436,7 +436,7 @@ function initGame() {
 
 // Start or restart game. Setup level's board and player blocks
 function restartGame() {
-  level = 0;
+  level = 2;
   restartLevel();
 }
 
