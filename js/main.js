@@ -436,7 +436,7 @@ function initGame() {
 
 // Start or restart game. Setup level's board and player blocks
 function restartGame() {
-  level = 2;
+  level = 0;
   restartLevel();
 }
 
