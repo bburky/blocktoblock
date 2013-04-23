@@ -325,7 +325,7 @@ function drawCamera(time) {
   //canvasCtx.drawImage(backgroundImg, sx, sy, w, h, dx, dy, w, h);
 
   // TODO: replace this with working background calculations
-  canvasCtx.drawImage(backgroundImg, camera.xPos, camera.yPos);
+  canvasCtx.drawImage(backgroundImg, camera.xPos, camera.yPos, backgroundImg.width * X_SCALE, backgroundImg.height * Y_SCALE);
 
   // Draw the rest of the game over the background
   canvasCtx.drawImage(buffer, camera.xPos - 2*BLOCK_WIDTH, camera.yPos - 2*BLOCK_HEIGHT);
@@ -550,6 +550,12 @@ if (Modernizr.touch) {
   // Resize to fit screen
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
+
+  X_SCALE = 25 / BLOCK_WIDTH;
+  BLOCK_WIDTH = 25;
+
+  Y_SCALE = 25 / BLOCK_HEIGHT;
+  BLOCK_HEIGHT = 25;
 
   // Prevent scrolling somehow
   document.addEventListener('touchmove', function(e) {

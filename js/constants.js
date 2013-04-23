@@ -1,5 +1,7 @@
 // Constants
 
+var X_SCALE = 1.0;
+var Y_SCALE = 1.0;
 var BLOCK_WIDTH = 45;
 var BLOCK_HEIGHT = 45;
 var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block5.png', 'img/block7.png'];
