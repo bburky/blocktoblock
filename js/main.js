@@ -576,8 +576,9 @@ if (Modernizr.touch) {
     for (var i = 0; i < touches.length; i++) {
       for (var j = 0; j < players.length; j++) {
         var pos = currentPlayerPosAfterCamera(players[j], lastUpdate);
-        if (touches[i].pageX > pos.x && touches[i].pageX < pos.x + BLOCK_WIDTH &&
-          touches[i].pageY > pos.y && touches[i].pageY < pos.y + BLOCK_HEIGHT) {
+        // If the touch is inside a player block, plus or minus BLOCK_WIDTH/2
+        if (touches[i].pageX > pos.x - BLOCK_WIDTH/2 && touches[i].pageX < pos.x + BLOCK_WIDTH + BLOCK_WIDTH/2&&
+          touches[i].pageY > pos.y - BLOCK_WIDTH/2 && touches[i].pageY < pos.y + BLOCK_HEIGHT + BLOCK_WIDTH/2) {
           currentTouches[touches[i].identifier] = {
             touch: touches[i],
             player: j
