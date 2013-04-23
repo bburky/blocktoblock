@@ -481,7 +481,11 @@ document.addEventListener('keydown', function(e) {
   switch (e.keyCode) {
     case 13: // ENTER
       e.preventDefault();
-      tryNextLevel();
+      if (players[0].dead || players[1].dead) {
+        restartLevel();
+      } else {
+        tryNextLevel();
+      }
       break;
     case 70: // f
       e.preventDefault();
