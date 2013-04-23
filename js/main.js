@@ -144,6 +144,14 @@ function updatePlayerPos(player, time) {
   };
 }
 
+function currentPlayerPosAfterCamera(player, time) {
+  var pos = updatePlayerPos(player, time);
+
+  return {
+    x: pos.x + camera.xPos,
+    y: pos.y + camera.yPos
+  };}
+
 // Return true if in bounds of screen
 function boundsCheck(x, y) {
   return !((x > board[0].length || x < 0) || (y > board.length || y < 0));
@@ -532,6 +540,74 @@ document.addEventListener('keyup', function(e) {
       break;
   }
 }, false);
+
+// If device is touch capable
+if (Modernizr.touch) {
+  // Resize to fit screen
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Prevent scrolling somehow
+  document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+  }, false);
+
+  // Capture new touches on the blocks
+  document.addEventListener('touchstart', function(e) {
+    var touches = e.changedTouches;
+    for (var i = 0; i < touches.length; i++) {
+      for (var j = 0; j < players.length; j++) {
+        var pos = currentPlayerPosAfterCamera(players[j], lastUpdate);
+        if (touches[i].pageX > pos.x && touches[i].pageX < pos.x + BLOCK_WIDTH &&
+          touches[i].pageY > pos.y && touches[i].pageY < pos.y + BLOCK_HEIGHT) {
+          currentTouches[touches[i].identifier] = {
+            touch: touches[i],
+            player: j
+          };
+        }
+      }
+    }
+    e.preventDefault();
+  }, false);
+
+  // Capture finished touches
+  document.addEventListener('touchend', function(e) {
+    var touches = e.changedTouches;
+    for (var i = 0; i < touches.length; i++) {
+      if (currentTouches[touches[i].identifier] !== undefined) {
+        var player = currentTouches[touches[i].identifier].player;
+        var start = currentTouches[touches[i].identifier].touch;
+        var end = touches[i];
+
+        if ((end.pageX - start.pageX) / BLOCK_WIDTH > 1) {
+          inputDirection(players[player], DIRECTION.right);
+        } else if ((end.pageX - start.pageX) / BLOCK_WIDTH < -1) {
+          inputDirection(players[player], DIRECTION.left);
+        } else if ((end.pageY - start.pageY) / BLOCK_WIDTH > 1) {
+          inputDirection(players[player], DIRECTION.down);
+        } else if ((end.pageY - start.pageY) / BLOCK_WIDTH < -1) {
+          inputDirection(players[player], DIRECTION.up);
+        }
+
+        delete currentTouches[touches[i].identifier];
+      }
+    }
+    e.preventDefault();
+  }, false);
+
+
+  // Capture cancelled touches
+  document.addEventListener('touchcancel', function(e) {
+    var touches = e.changedTouches;
+    for (var i = 0; i < touches.length; i++) {
+      if (currentTouches[touches[i].identifier] !== undefined) {
+        delete currentTouches[touches[i].identifier];
+      }
+    }
+    e.preventDefault();
+  }, false);
+
+}
 
 // Start the game
 // First load assets, then initialize and start

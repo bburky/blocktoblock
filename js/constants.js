@@ -106,3 +106,6 @@ var camera = {
 var boardRects;
 // Array of board initialization data
 var board;
+
+// Current touches on screen
+var currentTouches = {};
