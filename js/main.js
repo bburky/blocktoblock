@@ -557,7 +557,7 @@ if (Modernizr.touch) {
   Y_SCALE = 25 / BLOCK_HEIGHT;
   BLOCK_HEIGHT = 25;
 
-  // Prevent scrolling somehow
+  // Prevent scrolling on touchmove
   document.addEventListener('touchmove', function(e) {
     e.preventDefault();
   }, false);
@@ -567,18 +567,26 @@ if (Modernizr.touch) {
     e.preventDefault();
     var touches = e.changedTouches;
 
+    // Freeze blocks while the player is touching the screen
+    startPause();
+
+    // Advance to the next level if complete
     tryNextLevel();
 
+    // If dead, restart
     if (players[0].dead || players[1].dead) {
       restartLevel();
     }
 
+    // Handle all new touches
     for (var i = 0; i < touches.length; i++) {
       for (var j = 0; j < players.length; j++) {
         var pos = currentPlayerPosAfterCamera(players[j], lastUpdate);
         // If the touch is inside a player block, plus or minus BLOCK_WIDTH/2
         if (touches[i].pageX > pos.x - BLOCK_WIDTH/2 && touches[i].pageX < pos.x + BLOCK_WIDTH + BLOCK_WIDTH/2&&
           touches[i].pageY > pos.y - BLOCK_WIDTH/2 && touches[i].pageY < pos.y + BLOCK_HEIGHT + BLOCK_WIDTH/2) {
+
+          // Add the touch to the list of current touches
           currentTouches[touches[i].identifier] = {
             touch: touches[i],
             player: j
@@ -594,6 +602,7 @@ if (Modernizr.touch) {
     var touches = e.changedTouches;
 
     for (var i = 0; i < touches.length; i++) {
+      // Ignore the touch unless we added it to the list of current touches
       if (currentTouches[touches[i].identifier] !== undefined) {
         var player = currentTouches[touches[i].identifier].player;
         var start = currentTouches[touches[i].identifier].touch;
@@ -613,8 +622,14 @@ if (Modernizr.touch) {
           inputDirection(players[player], DIRECTION.up);
         }
 
+        // Remove the ended touch
         delete currentTouches[touches[i].identifier];
       }
+    }
+
+    // Unpause if no remaining touches
+    if (e.touches.length === 0) {
+      endPause();
     }
   }, false);
 
@@ -624,11 +639,18 @@ if (Modernizr.touch) {
     e.preventDefault();
     var touches = e.changedTouches;
 
+    // Remove the cancelled touches
     for (var i = 0; i < touches.length; i++) {
       if (currentTouches[touches[i].identifier] !== undefined) {
         delete currentTouches[touches[i].identifier];
       }
     }
+
+    // Unpause if no remaining touches
+    if (e.touches.length === 0) {
+      endPause();
+    }
+
   }, false);
 
 }
