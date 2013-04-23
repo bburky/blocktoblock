@@ -554,7 +554,15 @@ if (Modernizr.touch) {
 
   // Capture new touches on the blocks
   document.addEventListener('touchstart', function(e) {
+    e.preventDefault();
     var touches = e.changedTouches;
+
+    tryNextLevel();
+
+    if (players[0].dead || players[1].dead) {
+      restartLevel();
+    }
+
     for (var i = 0; i < touches.length; i++) {
       for (var j = 0; j < players.length; j++) {
         var pos = currentPlayerPosAfterCamera(players[j], lastUpdate);
@@ -567,12 +575,13 @@ if (Modernizr.touch) {
         }
       }
     }
-    e.preventDefault();
   }, false);
 
   // Capture finished touches
   document.addEventListener('touchend', function(e) {
+    e.preventDefault();
     var touches = e.changedTouches;
+
     for (var i = 0; i < touches.length; i++) {
       if (currentTouches[touches[i].identifier] !== undefined) {
         var player = currentTouches[touches[i].identifier].player;
@@ -592,19 +601,19 @@ if (Modernizr.touch) {
         delete currentTouches[touches[i].identifier];
       }
     }
-    e.preventDefault();
   }, false);
 
 
   // Capture cancelled touches
   document.addEventListener('touchcancel', function(e) {
+    e.preventDefault();
     var touches = e.changedTouches;
+
     for (var i = 0; i < touches.length; i++) {
       if (currentTouches[touches[i].identifier] !== undefined) {
         delete currentTouches[touches[i].identifier];
       }
     }
-    e.preventDefault();
   }, false);
 
 }
