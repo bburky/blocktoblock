@@ -1,7 +1,7 @@
 var levels = [
   {
     backgroundImgSrc: 'img/level1.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(90,168,205)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,7 +26,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level2.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(89,179,132)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -49,7 +49,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level3.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(81,119,189)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -74,7 +74,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level4.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(125,196,228)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -97,7 +97,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level5.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(90,168,205)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -116,7 +116,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level6.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(101,187,145)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -138,7 +138,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level7.png',
-    backgroundStyle: 'rgb(41,171,200)',
+    backgroundStyle: 'rgb(81,119,189)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -161,7 +161,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level8.png',
-    backgroundStyle: 'rgb(41,171,180)',
+    backgroundStyle: 'rgb(125,208,176)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -185,7 +185,7 @@ var levels = [
   },
   {
     backgroundImgSrc: 'img/level9.png',
-    backgroundStyle: 'rgb(41,171,180)',
+    backgroundStyle: 'rgb(70,70,70)',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
