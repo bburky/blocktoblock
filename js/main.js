@@ -4,7 +4,7 @@ function generateBoardRects() {
 
   for (var y = 0; y < board.length; y++) {
     for (var x = 0; x < board[y].length; x++) {
-      if (board[y][x] === 1 || board[y][x] === 8) {
+      if (board[y][x] === 1 || board[y][x] === 8 || board[y][x] === 5) {
         rects[[x,y]] = board[y][x];
       }
     }
@@ -166,8 +166,39 @@ function inputDirection(player, dir) {
 
 // Update camera state data and position
 function updateCamera(time, player0Pos, player1Pos) {
-  camera.xPos = canvas.width/2 - (player0Pos.x + player1Pos.x)/2;
-  camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
+  var top = Infinity;
+  var right = -Infinity;
+  var bottom = -Infinity;
+  var left = Infinity;
+
+  for(var b in boardRects) {
+    if (boardRects.hasOwnProperty(b)) {
+      if (boardRects[b] === 1 || boardRects[b] === 8 || boardRects[b] === 5) {
+        var coords = b.split(',');  // js converts keys to strings
+        top = Math.min(top,coords[1]);
+        right = Math.max(right,coords[0]);
+        bottom = Math.max(bottom,coords[1]);
+        left = Math.min(left,coords[0]);
+      }
+    }
+  }
+
+  top = Math.min(top,player0Pos.y/BLOCK_HEIGHT);
+  right = Math.max(right,player0Pos.x/BLOCK_WIDTH);
+  bottom = Math.max(bottom,player0Pos.y/BLOCK_HEIGHT);
+  left = Math.min(left,player0Pos.x/BLOCK_WIDTH);
+
+  top = Math.min(top,player1Pos.y/BLOCK_HEIGHT);
+  right = Math.max(right,player1Pos.x/BLOCK_WIDTH);
+  bottom = Math.max(bottom,player1Pos.y/BLOCK_HEIGHT);
+  left = Math.min(left,player1Pos.x/BLOCK_WIDTH);
+
+  camera.xPos = canvas.width/2 - (left + right)/2*BLOCK_WIDTH;
+  camera.yPos = canvas.height/2 - (top + bottom)/2*BLOCK_HEIGHT;
+
+
+  // camera.xPos = canvas.width/2 - (player0Pos.x + player1Pos.x)/2;
+  // camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
 }
 
 // Triggered when holding spacebar to freeze sliding blocks
