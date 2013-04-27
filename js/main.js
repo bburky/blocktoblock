@@ -195,10 +195,6 @@ function updateCamera(time, player0Pos, player1Pos) {
 
   camera.xPos = canvas.width/2 - (left + right)/2*BLOCK_WIDTH;
   camera.yPos = canvas.height/2 - (top + bottom)/2*BLOCK_HEIGHT;
-
-
-  // camera.xPos = canvas.width/2 - (player0Pos.x + player1Pos.x)/2;
-  // camera.yPos = canvas.height/2 - (player0Pos.y + player1Pos.y)/2;
 }
 
 // Triggered when holding spacebar to freeze sliding blocks
