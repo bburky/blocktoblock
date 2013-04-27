@@ -479,6 +479,8 @@ function tryNextLevel() {
   if (wonGame) {
     level = (level + 1) % levels.length;
     restartLevel();
+  } else if (players[0].dead || players[1].dead) {
+    restartLevel();
   }
 }
 
@@ -506,11 +508,7 @@ document.addEventListener('keydown', function(e) {
   switch (e.keyCode) {
     case 13: // ENTER
       e.preventDefault();
-      if (players[0].dead || players[1].dead) {
-        restartLevel();
-      } else {
-        tryNextLevel();
-      }
+      tryNextLevel();
       break;
     case 70: // f
       e.preventDefault();
