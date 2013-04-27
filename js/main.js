@@ -377,6 +377,7 @@ function drawFrame(time) {
 }
 
 function loadAssets(callback) {
+  var i;
   var assetsLoaded = 0;
 
   // Callback onload of each asset to check if loading is complete
@@ -388,14 +389,14 @@ function loadAssets(callback) {
   }
 
   // Load player sprites
-  for (var i = 0; i < players.length; i++) {
+  for (i = 0; i < players.length; i++) {
     players[i].img = new Image();
     players[i].img.src = players[i].imgSrc;
     players[i].img.onload = checkAssetsLoaded;
   }
 
   // Load block sprites
-  for (var i = 0; i < BLOCK_IMG_SRCS.length; i++) {
+  for (i = 0; i < BLOCK_IMG_SRCS.length; i++) {
     blockImgs[i] = new Image();
     blockImgs[i].src = BLOCK_IMG_SRCS[i];
     blockImgs[i].onload = checkAssetsLoaded;
@@ -407,7 +408,7 @@ function loadAssets(callback) {
   blockGoalImg.onload = checkAssetsLoaded;
 
   // Load level backgrouonds
-  for (var i = 0; i < levels.length; i++) {
+  for (i = 0; i < levels.length; i++) {
     levels[i].backgroundImg = new Image();
     levels[i].backgroundImg.src = levels[i].backgroundImgSrc;
     levels[i].backgroundImg.onload = checkAssetsLoaded;
@@ -421,6 +422,9 @@ function loadAssets(callback) {
 
 // Initialization and game loop
 function initGame() {
+  // Resize game to screen
+  resize();
+
   // Setup board and player blocks
   restartGame();
 
@@ -475,6 +479,25 @@ function tryNextLevel() {
     restartLevel();
   }
 }
+
+// Resize to fit screen
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Unused, retina displays and such
+  // pixelRatio = 'devicePixelRatio' in window ? window.devicePixelRatio : 1;
+
+  // Scale down stuff to screen size
+  x = Math.min(window.innerWidth / MIN_WIDTH, 1);
+  y = Math.min(window.innerHeight / MIN_HEIGHT, 1);
+
+  X_SCALE = Y_SCALE = Math.min(x, y);
+  BLOCK_WIDTH = MAX_BLOCK_WIDTH * X_SCALE;
+  BLOCK_HEIGHT = MAX_BLOCK_HEIGHT * Y_SCALE;
+}
+
+window.addEventListener('resize', resize, false);
 
 // Listen for keypresses for movement and fullscreen
 document.addEventListener('keydown', function(e) {
@@ -547,16 +570,6 @@ document.addEventListener('keyup', function(e) {
 
 // If device is touch capable
 if (Modernizr.touch) {
-  // Resize to fit screen
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  X_SCALE = 25 / BLOCK_WIDTH;
-  BLOCK_WIDTH = 25;
-
-  Y_SCALE = 25 / BLOCK_HEIGHT;
-  BLOCK_HEIGHT = 25;
-
   // Prevent scrolling on touchmove
   document.addEventListener('touchmove', function(e) {
     e.preventDefault();
@@ -589,6 +602,10 @@ if (Modernizr.touch) {
           // Add the touch to the list of current touches
           currentTouches[touches[i].identifier] = {
             touch: touches[i],
+            pos: {
+              x: touches[i].pageX,
+              y: touches[i].pageY
+            },
             player: j
           };
         }
@@ -605,13 +622,13 @@ if (Modernizr.touch) {
       // Ignore the touch unless we added it to the list of current touches
       if (currentTouches[touches[i].identifier] !== undefined) {
         var player = currentTouches[touches[i].identifier].player;
-        var start = currentTouches[touches[i].identifier].touch;
+        var start = currentTouches[touches[i].identifier].pos;
         var end = touches[i];
 
         // Send the player in the direction of the touch swipe
         // Choose whichever axis most of the movement is on
         // If the swipe length is less than one block, ignore it
-        var dir = [(end.pageX - start.pageX) / BLOCK_WIDTH, (end.pageY - start.pageY) / BLOCK_WIDTH];
+        var dir = [(end.pageX - start.x) / BLOCK_WIDTH, (end.pageY - start.y) / BLOCK_WIDTH];
         if (dir[0] > 1 && Math.abs(dir[0]) > Math.abs(dir[1])) {
           inputDirection(players[player], DIRECTION.right);
         } else if (dir[0] < -1 && Math.abs(dir[0]) > Math.abs(dir[1])) {

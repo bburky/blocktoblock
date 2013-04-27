@@ -1,9 +1,13 @@
 // Constants
 
+var MIN_WIDTH = 800;
+var MIN_HEIGHT = 600;
 var X_SCALE = 1.0;
 var Y_SCALE = 1.0;
-var BLOCK_WIDTH = 45;
-var BLOCK_HEIGHT = 45;
+var MAX_BLOCK_WIDTH = 45;
+var MAX_BLOCK_HEIGHT = 45;
+var BLOCK_WIDTH = MAX_BLOCK_WIDTH;
+var BLOCK_HEIGHT = MAX_BLOCK_HEIGHT;
 var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block5.png', 'img/block7.png'];
 var BLOCK_GOAL_IMG_SRC = 'img/blockGoal.png';
 
@@ -47,8 +51,8 @@ var canvasCtx = canvas.getContext('2d');
 
 // Create a second buffer to be blited onto the canvas
 var buffer = document.createElement("canvas");
-buffer.width = 4000;
-buffer.height = 3000;
+buffer.width = 2000;
+buffer.height = 2000;
 var ctx = buffer.getContext('2d');
 
 // Div wrapper element of canvas
@@ -57,7 +61,7 @@ var wrapper = document.getElementById('game-wrapper');
 // Image instances
 var blockImgs = [];
 var blockGoalImg;
-var backgoundImg;
+var backgroundImg;
 var backgroundStyle;
 
 // Sound instances
