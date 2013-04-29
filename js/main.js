@@ -654,8 +654,8 @@ if (Modernizr.touch) {
 
         // Send the player in the direction of the touch swipe
         // Choose whichever axis most of the movement is on
-        // If the swipe length is less than one block, ignore it
-        var dir = [(end.pageX - start.x) / BLOCK_WIDTH, (end.pageY - start.y) / BLOCK_WIDTH];
+        // If the swipe length is less than 1/4 block, ignore it
+        var dir = [(end.pageX - start.x) / BLOCK_WIDTH/4, (end.pageY - start.y) / BLOCK_WIDTH/4];
         if (dir[0] > 1 && Math.abs(dir[0]) > Math.abs(dir[1])) {
           inputDirection(players[player], DIRECTION.right);
         } else if (dir[0] < -1 && Math.abs(dir[0]) > Math.abs(dir[1])) {
