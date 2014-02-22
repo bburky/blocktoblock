@@ -64,96 +64,93 @@ function create() {
 }
 
 function update() {
-    if (rKey.isDown) {
-        createLevel();
-    }
+    if (!levelComplete) {
 
-    if (wKey.isDown && player1.direction === DIRECTION.none) {
-        player1.direction = DIRECTION.up;
-    } else if (sKey.isDown && player1.direction === DIRECTION.none) {
-        player1.direction = DIRECTION.down;
-    } else if (aKey.isDown && player1.direction === DIRECTION.none) {
-        player1.direction = DIRECTION.left;
-    } else if (dKey.isDown && player1.direction === DIRECTION.none) {
-        player1.direction = DIRECTION.right;
-    }
-
-    if (upKey.isDown && player2.direction === DIRECTION.none) {
-        player2.direction = DIRECTION.up;
-    } else if (downKey.isDown && player2.direction === DIRECTION.none) {
-        player2.direction = DIRECTION.down;
-    } else if (leftKey.isDown && player2.direction === DIRECTION.none) {
-        player2.direction = DIRECTION.left;
-    } else if (rightKey.isDown && player2.direction === DIRECTION.none) {
-        player2.direction = DIRECTION.right;
-    }
-
-    for (var i = 0; i < players.length; i++) {
-        var player = players.getAt(i);
-        if (!player.moving) {
-            switch (player.direction) {
-                case DIRECTION.up:
-                    var newPosition = new Phaser.Point(player.x, player.y - BLOCK_SIZE);
-                    goToPoint(player, newPosition);
-                    break;
-
-                case DIRECTION.down:
-                    var newPosition = new Phaser.Point(player.x, player.y + BLOCK_SIZE);
-                    goToPoint(player, newPosition);
-                    break;
-
-                case DIRECTION.left:
-                    var newPosition = new Phaser.Point(player.x - BLOCK_SIZE, player.y);
-                    goToPoint(player, newPosition);
-                    break;
-
-                case DIRECTION.right:
-                    var newPosition = new Phaser.Point(player.x + BLOCK_SIZE, player.y);
-                    goToPoint(player, newPosition);
-                    break;
-            }
-        }
-    }
-
-    if (!levelComplete && countLivingGoalBlocks() === 0) {
-        levelComplete = true;
-
-        var text = "Level Complete";
-        var style = { font: "72px Arial", fill: "#ff0044", align: "center" };
-        var t = game.add.text(game.world.centerX, game.world.centerY, text, style);
-        t.anchor.setTo(0.5, 0.5);
-
-        var remainingBlocks = blocks.countLiving();
-        if (remainingBlocks !== 0) {
-            var text = "You missed " + remainingBlocks + " blocks";
-            var style = { font: "32px Arial", fill: "#ff0044", align: "center" };
-            var t = game.add.text(game.world.centerX, game.world.centerY + 72, text, style);
-            t.anchor.setTo(0.5, 0.5);
-        }
-
-        var text = "Press any key to continue";
-        var style = { font: "32px Arial", fill: "#ff0044", align: "center" };
-        var t = game.add.text(game.world.centerX, game.world.centerY + (remainingBlocks == 0 ? 0 : 72) + 72, text, style);
-        t.anchor.setTo(0.5, 1);
-
-        game.input.keyboard.onUpCallback = function() {
-            level = (level + 1) % levels.length;
+        if (rKey.isDown) {
             createLevel();
         }
-        game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
-    } 
 
-    game.camera.focusOnXY((player1.x + player2.x) / 2, (player1.y + player2.y) / 2);
+        if (wKey.isDown && player1.direction === DIRECTION.none) {
+            player1.direction = DIRECTION.up;
+        } else if (sKey.isDown && player1.direction === DIRECTION.none) {
+            player1.direction = DIRECTION.down;
+        } else if (aKey.isDown && player1.direction === DIRECTION.none) {
+            player1.direction = DIRECTION.left;
+        } else if (dKey.isDown && player1.direction === DIRECTION.none) {
+            player1.direction = DIRECTION.right;
+        }
+
+        if (upKey.isDown && player2.direction === DIRECTION.none) {
+            player2.direction = DIRECTION.up;
+        } else if (downKey.isDown && player2.direction === DIRECTION.none) {
+            player2.direction = DIRECTION.down;
+        } else if (leftKey.isDown && player2.direction === DIRECTION.none) {
+            player2.direction = DIRECTION.left;
+        } else if (rightKey.isDown && player2.direction === DIRECTION.none) {
+            player2.direction = DIRECTION.right;
+        }
+
+        for (var i = 0; i < players.length; i++) {
+            var player = players.getAt(i);
+            if (!player.moving) {
+                switch (player.direction) {
+                    case DIRECTION.up:
+                        var newPosition = new Phaser.Point(player.x, player.y - BLOCK_SIZE);
+                        goToPoint(player, newPosition);
+                        break;
+
+                    case DIRECTION.down:
+                        var newPosition = new Phaser.Point(player.x, player.y + BLOCK_SIZE);
+                        goToPoint(player, newPosition);
+                        break;
+
+                    case DIRECTION.left:
+                        var newPosition = new Phaser.Point(player.x - BLOCK_SIZE, player.y);
+                        goToPoint(player, newPosition);
+                        break;
+
+                    case DIRECTION.right:
+                        var newPosition = new Phaser.Point(player.x + BLOCK_SIZE, player.y);
+                        goToPoint(player, newPosition);
+                        break;
+                }
+            }
+        }
+
+        if (countLivingGoalBlocks() === 0) {
+            levelComplete = true;
+
+            var text = "Level Complete";
+            var style = { font: "72px Arial", fill: "#ff0044", align: "center" };
+            var t = game.add.text(game.camera.width/2, game.camera.height/2, text, style);
+            t.anchor.setTo(0.5, 1);
+
+            var remainingBlocks = blocks.countLiving();
+            if (remainingBlocks !== 0) {
+                var text = "You missed " + remainingBlocks + " blocks";
+                var style = { font: "36px Arial", fill: "#ff0044", align: "center" };
+                var t = game.add.text(game.camera.width/2, game.camera.height/2 + 54, text, style);
+                t.anchor.setTo(0.5, 1);
+            }
+
+            var text = "Press any key to continue";
+            var style = { font: "36px Arial", fill: "#ff0044", align: "center" };
+            var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks == 0 ? 0 : 54) + 54, text, style);
+            t.anchor.setTo(0.5, 1);
+
+            game.input.keyboard.onUpCallback = function() {
+                level = (level + 1) % levels.length;
+                createLevel();
+            }
+            game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
+        }
+
+        game.camera.focusOnXY((player1.x + player2.x) / 2, (player1.y + player2.y) / 2);
+    }
 }
 
 function createLevel() {
-    // var cleanup = [backgroundSprite, players, blocks];
-    // for (var i = 0; i < cleanup.length; i++) {
-    //     if (cleanup[i] && cleanup[i].exists) {
-    //         cleanup[i].destroy();
-    //     }
-    // }
-    game.world.destroy()
+    game.world.destroy() // I suppose it's fine to destroy the world?
     // game.input.onUp is cleaned up by destroying the world
     game.input.keyboard.onUpCallback = undefined;
 
@@ -163,19 +160,24 @@ function createLevel() {
     game.stage.backgroundColor = levels[level].backgroundStyle;
     backgroundSprite = game.add.sprite(0, 0, levels[level].backgroundImgSrc);
     backgroundSprite.centerOn(game.width/2, game.height/2);
-    var offset = {x: backgroundSprite.x, y: backgroundSprite.y}
-    game.world.setBounds(0, 0, backgroundSprite.width, backgroundSprite.height);
+    var offset = {x: backgroundSprite.x, y: backgroundSprite.y};
+    game.world.bounds.x = backgroundSprite.x;
+    game.world.bounds.y = backgroundSprite.y;
+    game.world.bounds.width = backgroundSprite.width;
+    game.world.bounds.height = backgroundSprite.height;
 
     blocks = game.add.group();
     players = game.add.group();
 
     player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1], 'player-1', players);
+    player1.events.onOutOfBounds.add(outOfBounds);
     player1.name = 'player left';
     player1.destination = new Phaser.Point(player1.x, player1.y);
     player1.direction = DIRECTION.none;
     player1.moving = false;
 
     player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1], 'player-2', players);
+    player2.events.onOutOfBounds.add(outOfBounds);
     player2.name = 'player right';
     player2.destination = new Phaser.Point(player2.x, player2.y);
     player2.direction = DIRECTION.none;
@@ -199,7 +201,7 @@ function goToPoint(player, point) {
     var collidingBlock;
 
     for (var i = 0; i < blocks.length; i++) {
-        var block = blocks.getAt(i)
+        var block = blocks.getAt(i);
         if (block.alive) {
             if (block.x === point.x && block.y === point.y) {
                 collidingBlock = block;
@@ -209,7 +211,7 @@ function goToPoint(player, point) {
     }
 
     for (var i = 0; i < players.length; i++) {
-        var otherPlayer = players.getAt(i)
+        var otherPlayer = players.getAt(i);
         if (otherPlayer !== player) {
             if (otherPlayer.direction !== player.direction && otherPlayer.destination.equals(point)) {
                 collidingPlayer = otherPlayer;
@@ -243,6 +245,39 @@ function goToPoint(player, point) {
     tween.start();
 }
 
+function outOfBounds() {
+    levelComplete = true;
+    game.tweens.removeAll();
+
+    // Blend from the current background color to #F00 65% interpolated
+    var originalBackground = parseBackgroundColor()
+    var tween = game.add.tween({percent:0.0});
+    tween.to({percent: 65.0}, PLAYER_SPEED*3);
+    tween.onUpdateCallback(function(tween) {
+        var percent = tween._object.percent; // XXX: _object is undocumented
+        var color = Phaser.Color.RGBtoWebstring(Phaser.Color.interpolateColor(originalBackground, 0xFF0000, 100, percent, 0));
+        document.body.style.background = color;
+        game.stage.backgroundColor = color;
+    });
+    tween.start();
+
+
+    var text = "Game Over";
+    var style = { font: "72px Arial", fill: "#ff0044", align: "center" };
+    var t = game.add.text(game.camera.width/2, game.camera.height/2, text, style);
+    t.fixedToCamera = true;
+    t.anchor.setTo(0.5, 1);
+
+    var text = "Press R to restart";
+    var style = { font: "36px Arial", fill: "#ff0044", align: "center" };
+    var t = game.add.text(game.camera.width/2, game.camera.height/2 + 54, text, style);
+    t.fixedToCamera = true;
+    t.anchor.setTo(0.5, 1);
+
+    game.input.keyboard.onUpCallback = createLevel;
+    game.input.onUp.addOnce(createLevel);
+}
+
 function countLivingGoalBlocks() {
     var count = 0;
     for (var i = 0; i < blocks.length; i++) {
@@ -254,5 +289,14 @@ function countLivingGoalBlocks() {
     return count;
 }
 
-var game = new Phaser.Game(1000, 1000, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+function parseBackgroundColor() {
+    var m = getComputedStyle(document.body).backgroundColor.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+    if (m) {
+        return parseInt(m[1], 10) << 8*2 | parseInt(m[2], 10) << 8 | parseInt(m[3], 10);
+    } else {
+        throw new Error("Color could not be parsed");
+    }
+}
+
+var game = new Phaser.Game(1000, 1000, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
 </script>
