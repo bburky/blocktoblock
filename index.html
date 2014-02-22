@@ -13,16 +13,20 @@ canvas {
 </style>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/phaser/1.1.5/phaser.min.js"></script>
 <script>window.Phaser || document.write('<script src="js/phaser.min.js"><\/script>')</script>
+<script src="js/levels.js"></script>
 <script>
 var BLOCK_SIZE = 45;
 var PLAYER_SPEED = BLOCK_SIZE*5;
 var DIRECTION = {none: 0, up: 1, right: 2, down: 3, left: 4};
+var BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
 
 var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey;
 var soundHitBlock, soundHitPlayer;
 var players, blocks;
 var player1, player2
 var collidingPlayer;
+
+var level;
 
 function preload() {
     game.load.image('player-1', 'img/player-1.png');
@@ -33,12 +37,13 @@ function preload() {
     game.load.image('block-goal', 'img/block-goal.png');
     game.load.audio('hit-block', ['snd/ToneWobble.mp3', 'snd/ToneWobble.ogg']);
     game.load.audio('hit-player', ['snd/Game-Shot.mp3', 'snd/Game-Shot.ogg']);
+
+    for (var i = 0; i < levels.length; i++) {
+        game.load.image(levels[i].backgroundImgSrc, levels[i].backgroundImgSrc);
+    }
 }
 
 function create() {
-        game.world.setBounds(0, 0, 2000, 2000);
-
-
     upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -51,27 +56,36 @@ function create() {
     soundHitBlock = game.add.audio('hit-block');
     soundHitPlayer = game.add.audio('hit-player');
 
+    level = 0;
+
+    game.stage.backgroundColor = levels[level].backgroundStyle;
+    var backgroundSprite = game.add.sprite(0, 0, levels[level].backgroundImgSrc);
+    backgroundSprite.centerOn(game.width/2, game.height/2);
+    var offset = {x: backgroundSprite.x, y: backgroundSprite.y}
+    game.world.setBounds(0, 0, backgroundSprite.width, backgroundSprite.height);
+
     blocks = game.add.group();
     players = game.add.group();
 
-    player1 = players.create(0, 0, 'player-1', players);
+    player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1], 'player-1', players);
     player1.name = 'player left';
-    player1.destination = player1.topLeft;
+    player1.destination = player1.topLeft.clone();
     player1.direction = DIRECTION.none;
     player1.moving = false;
 
-    player2 = players.create(BLOCK_SIZE*5, 0, 'player-2', players);
+    player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1], 'player-2', players);
     player2.name = 'player right';
-    player2.destination = player2.topLeft;
+    player2.destination = player2.topLeft.clone();
     player2.direction = DIRECTION.none;
     player2.moving = false;
 
-    blocks.create(BLOCK_SIZE*2, 0, 'block-blue', blocks);
-    blocks.create(BLOCK_SIZE*6, 0, 'block-green', blocks);
-    blocks.create(BLOCK_SIZE*2, BLOCK_SIZE*10, 'block-blue', blocks);
-    blocks.create(BLOCK_SIZE*6, BLOCK_SIZE*10, 'block-green', blocks);
-    blocks.create(BLOCK_SIZE*2, BLOCK_SIZE*30, 'block-blue', blocks);
-    blocks.create(BLOCK_SIZE*6, BLOCK_SIZE*30, 'block-green', blocks);
+    for (var i = 0; i < levels[level].board.length; i++) {
+        for (var j = 0; j < levels[level].board[i].length; j++) {
+            if (levels[level].board[i][j] === LEVEL_NORMAL_BLOCK) {
+                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
+            }
+        }
+    }
 }
 
 function update() {
@@ -126,7 +140,6 @@ function update() {
 }
 
 function goToPoint(player, point) {
-    print
     // using global collidingPlayer
     var collidingBlock;
 
@@ -175,5 +188,5 @@ function goToPoint(player, point) {
     tween.start();
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 1000, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 </script>
