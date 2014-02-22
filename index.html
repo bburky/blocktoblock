@@ -36,6 +36,9 @@ function preload() {
 }
 
 function create() {
+        game.world.setBounds(0, 0, 2000, 2000);
+
+
     upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -65,6 +68,10 @@ function create() {
 
     blocks.create(BLOCK_SIZE*2, 0, 'block-blue', blocks);
     blocks.create(BLOCK_SIZE*6, 0, 'block-green', blocks);
+    blocks.create(BLOCK_SIZE*2, BLOCK_SIZE*10, 'block-blue', blocks);
+    blocks.create(BLOCK_SIZE*6, BLOCK_SIZE*10, 'block-green', blocks);
+    blocks.create(BLOCK_SIZE*2, BLOCK_SIZE*30, 'block-blue', blocks);
+    blocks.create(BLOCK_SIZE*6, BLOCK_SIZE*30, 'block-green', blocks);
 }
 
 function update() {
@@ -93,41 +100,40 @@ function update() {
         if (!player.moving) {
             switch (player.direction) {
                 case DIRECTION.up:
-                    var newPosition = player.topLeft.clone();
-                    newPosition.y -= BLOCK_SIZE;
+                    var newPosition = new Phaser.Point(player.x, player.y - BLOCK_SIZE);
                     goToPoint(player, newPosition);
                     break;
 
                 case DIRECTION.down:
-                    var newPosition = player.topLeft.clone();
-                    newPosition.y += BLOCK_SIZE;
+                    var newPosition = new Phaser.Point(player.x, player.y + BLOCK_SIZE);
                     goToPoint(player, newPosition);
                     break;
 
                 case DIRECTION.left:
-                    var newPosition = player.topLeft.clone();
-                    newPosition.x -= BLOCK_SIZE;
+                    var newPosition = new Phaser.Point(player.x - BLOCK_SIZE, player.y);
                     goToPoint(player, newPosition);
                     break;
 
                 case DIRECTION.right:
-                    var newPosition = player.topLeft.clone();
-                    newPosition.x += BLOCK_SIZE;
+                    var newPosition = new Phaser.Point(player.x + BLOCK_SIZE, player.y);
                     goToPoint(player, newPosition);
                     break;
             }
         }
     }
+
+    game.camera.focusOnXY((player1.x + player2.x) / 2, (player1.y + player2.y) / 2)
 }
 
 function goToPoint(player, point) {
+    print
     // using global collidingPlayer
     var collidingBlock;
 
     for (var i = 0; i < blocks.length; i++) {
         var block = blocks.getAt(i)
         if (block.alive) {
-            if (block.topLeft.equals(point)) {
+            if (block.x == point.x && block.y == point.y) {
                 collidingBlock = block;
                 break;
             }
@@ -165,11 +171,9 @@ function goToPoint(player, point) {
                 soundHitPlayer.play();
             }
         }
-
-        player.topLeft = point; // Should I actually assign to topLeft?
     });
     tween.start();
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 </script>
