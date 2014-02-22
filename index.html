@@ -146,6 +146,7 @@ function createLevel() {
 
     levelComplete = false;
 
+    document.body.style.background = levels[level].backgroundStyle;
     game.stage.backgroundColor = levels[level].backgroundStyle;
     backgroundSprite = game.add.sprite(0, 0, levels[level].backgroundImgSrc);
     backgroundSprite.centerOn(game.width/2, game.height/2);
