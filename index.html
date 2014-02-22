@@ -161,6 +161,7 @@ function createLevel() {
     game.world.destroy() // I suppose it's fine to destroy the world?
     // game.input.onUp is cleaned up by destroying the world
     game.input.keyboard.onUpCallback = undefined;
+    game.tweens.removeAll();
 
     levelComplete = false;
 
