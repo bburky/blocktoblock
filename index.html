@@ -22,11 +22,13 @@ var BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
 
 var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey;
 var soundHitBlock, soundHitPlayer;
+var backgroundSprite;
 var players, blocks;
 var player1, player2
 var collidingPlayer;
 
 var level;
+var levelComplete;
 
 function preload() {
     game.load.image('player-1', 'img/player-1.png');
@@ -57,35 +59,7 @@ function create() {
     soundHitPlayer = game.add.audio('hit-player');
 
     level = 0;
-
-    game.stage.backgroundColor = levels[level].backgroundStyle;
-    var backgroundSprite = game.add.sprite(0, 0, levels[level].backgroundImgSrc);
-    backgroundSprite.centerOn(game.width/2, game.height/2);
-    var offset = {x: backgroundSprite.x, y: backgroundSprite.y}
-    game.world.setBounds(0, 0, backgroundSprite.width, backgroundSprite.height);
-
-    blocks = game.add.group();
-    players = game.add.group();
-
-    player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1], 'player-1', players);
-    player1.name = 'player left';
-    player1.destination = player1.topLeft.clone();
-    player1.direction = DIRECTION.none;
-    player1.moving = false;
-
-    player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1], 'player-2', players);
-    player2.name = 'player right';
-    player2.destination = player2.topLeft.clone();
-    player2.direction = DIRECTION.none;
-    player2.moving = false;
-
-    for (var i = 0; i < levels[level].board.length; i++) {
-        for (var j = 0; j < levels[level].board[i].length; j++) {
-            if (levels[level].board[i][j] === LEVEL_NORMAL_BLOCK) {
-                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
-            }
-        }
-    }
+    createLevel();
 }
 
 function update() {
@@ -136,7 +110,70 @@ function update() {
         }
     }
 
-    game.camera.focusOnXY((player1.x + player2.x) / 2, (player1.y + player2.y) / 2)
+    if (!levelComplete && blocks.countLiving() === 0) {
+        levelComplete = true;
+
+        var text = "Level Complete";
+        var style = { font: "72px Arial", fill: "#ff0044", align: "center" };
+        var t = game.add.text(game.world.centerX, game.world.centerY, text, style);
+        t.anchor.setTo(0.5, 0.5);
+
+        var text = "Press any key to continue";
+        var style = { font: "32px Arial", fill: "#ff0044", align: "center" };
+        var t = game.add.text(game.world.centerX, game.world.centerY + 72, text, style);
+        t.anchor.setTo(0.5, 0.5);
+
+        game.input.keyboard.onUpCallback = function() {
+            level = (level + 1) % levels.length;
+            createLevel();
+        }
+        game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
+    } 
+
+    game.camera.focusOnXY((player1.x + player2.x) / 2, (player1.y + player2.y) / 2);
+}
+
+function createLevel() {
+    // var cleanup = [backgroundSprite, players, blocks];
+    // for (var i = 0; i < cleanup.length; i++) {
+    //     if (cleanup[i] && cleanup[i].exists) {
+    //         cleanup[i].destroy();
+    //     }
+    // }
+    game.world.destroy()
+    // game.input.onUp is cleaned up by destroying the world
+    game.input.keyboard.onUpCallback = undefined;
+
+    levelComplete = false;
+
+    game.stage.backgroundColor = levels[level].backgroundStyle;
+    backgroundSprite = game.add.sprite(0, 0, levels[level].backgroundImgSrc);
+    backgroundSprite.centerOn(game.width/2, game.height/2);
+    var offset = {x: backgroundSprite.x, y: backgroundSprite.y}
+    game.world.setBounds(0, 0, backgroundSprite.width, backgroundSprite.height);
+
+    blocks = game.add.group();
+    players = game.add.group();
+
+    player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1], 'player-1', players);
+    player1.name = 'player left';
+    player1.destination = new Phaser.Point(player1.x, player1.y);
+    player1.direction = DIRECTION.none;
+    player1.moving = false;
+
+    player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1], 'player-2', players);
+    player2.name = 'player right';
+    player2.destination = new Phaser.Point(player2.x, player2.y);
+    player2.direction = DIRECTION.none;
+    player2.moving = false;
+
+    for (var i = 0; i < levels[level].board.length; i++) {
+        for (var j = 0; j < levels[level].board[i].length; j++) {
+            if (levels[level].board[i][j] === LEVEL_NORMAL_BLOCK) {
+                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
+            }
+        }
+    }
 }
 
 function goToPoint(player, point) {
