@@ -20,7 +20,7 @@ var PLAYER_SPEED = BLOCK_SIZE*5;
 var DIRECTION = {none: 0, up: 1, right: 2, down: 3, left: 4};
 var BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
 
-var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey;
+var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey, rKey;
 var soundHitBlock, soundHitPlayer;
 var backgroundSprite;
 var players, blocks;
@@ -54,6 +54,7 @@ function create() {
     dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
     aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+    rKey = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
     soundHitBlock = game.add.audio('hit-block');
     soundHitPlayer = game.add.audio('hit-player');
@@ -63,6 +64,10 @@ function create() {
 }
 
 function update() {
+    if (rKey.isDown) {
+        createLevel();
+    }
+
     if (wKey.isDown && player1.direction === DIRECTION.none) {
         player1.direction = DIRECTION.up;
     } else if (sKey.isDown && player1.direction === DIRECTION.none) {
