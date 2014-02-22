@@ -1,6 +1,3 @@
-var LEVEL_NORMAL_BLOCK = 2;
-var LEVEL_GOAL_BLOCK = 1;
-
 var levels = [
   {
     backgroundImgSrc: 'img/level1.png',
