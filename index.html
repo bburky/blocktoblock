@@ -1,0 +1,37 @@
+<!doctype html> 
+<meta charset="utf-8" />
+<title>Block to Block</title>
+<style>
+canvas {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+</style>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/phaser/1.1.5/phaser.min.js"></script>
+<script>window.Phaser || document.write('<script src="js/phaser.min.js"><\/script>')</script>
+<script>
+function preload() {
+    game.load.image('player-1', 'img/player-1.png');
+    game.load.image('player-2', 'img/player-2.png');
+    game.load.image('block-blue', 'img/block-blue.png');
+    game.load.image('block-red', 'img/block-red.png');
+    game.load.image('block-green', 'img/block-green.png');
+    game.load.image('block-goal', 'img/block-goal.png');
+}
+
+function create() {
+    imgs = ['player-1', 'player-2', 'block-blue', 'block-red', 'block-green', 'block-goal',]
+    for (var i = 0; i < imgs.length; i++) {
+        game.add.sprite(0, i*45, imgs[i]);
+    }
+}
+
+function update() {
+}
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+</script>
