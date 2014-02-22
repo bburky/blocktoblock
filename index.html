@@ -14,6 +14,17 @@ canvas {
 <script src="http://cdnjs.cloudflare.com/ajax/libs/phaser/1.1.5/phaser.min.js"></script>
 <script>window.Phaser || document.write('<script src="js/phaser.min.js"><\/script>')</script>
 <script>
+var BLOCK_SIZE = 45;
+var PLAYER_SPEED = BLOCK_SIZE*5;
+
+var players, blocks;
+var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey;
+
+var player1, player2
+
+// FIXME: debug
+var block;
+
 function preload() {
     game.load.image('player-1', 'img/player-1.png');
     game.load.image('player-2', 'img/player-2.png');
@@ -24,14 +35,87 @@ function preload() {
 }
 
 function create() {
-    imgs = ['player-1', 'player-2', 'block-blue', 'block-red', 'block-green', 'block-goal',]
-    for (var i = 0; i < imgs.length; i++) {
-        game.add.sprite(0, i*45, imgs[i]);
-    }
+    players = game.add.group();
+    blocks = game.add.group();
+
+    player1 = players.create(BLOCK_SIZE*5, 0, 'player-1', players);
+    player1.body.setRectangle(5, 5, BLOCK_SIZE/2-2, BLOCK_SIZE/2-2);
+
+    player2 = players.create(0, 0, 'player-2', players);
+    player2.body.setRectangle(5, 5, BLOCK_SIZE/2-2, BLOCK_SIZE/2-2);
+
+    block = blocks.create(BLOCK_SIZE*2, 0, 'block-blue', blocks);
+    block.body.setRectangle(5, 5, BLOCK_SIZE/2-2, BLOCK_SIZE/2);
+    block.body.immovable = true;
+
+    upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+    sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+    dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+
 }
 
 function update() {
+    if (upKey.isDown && !isMoving(player1)) {
+        player1.body.velocity.y = -PLAYER_SPEED;
+    } else if (downKey.isDown && !isMoving(player1)) {
+        player1.body.velocity.y = PLAYER_SPEED;
+    } else if (leftKey.isDown && !isMoving(player1)) {
+        player1.body.velocity.x = -PLAYER_SPEED;
+    } else if (rightKey.isDown && !isMoving(player1)) {
+        player1.body.velocity.x = PLAYER_SPEED;
+    }
+
+    if (wKey.isDown && !isMoving(player2)) {
+        player2.body.velocity.y = -PLAYER_SPEED;
+    } else if (sKey.isDown && !isMoving(player2)) {
+        player2.body.velocity.y = PLAYER_SPEED;
+    } else if (aKey.isDown && !isMoving(player2)) {
+        player2.body.velocity.x = -PLAYER_SPEED;
+    } else if (dKey.isDown && !isMoving(player2)) {
+        player2.body.velocity.x = PLAYER_SPEED;
+    }
+
+    game.physics.overlap(players, blocks, playerBlockCollideCallback);
+    game.physics.overlap(players, players, playerPlayerCollideCallback);
 }
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+function render() {
+    // FIXME: debug
+    game.debug.renderBodyInfo(player1, 0, 400);
+    game.debug.renderPhysicsBody(player1.body);
+    game.debug.renderPhysicsBody(player2.body);
+    game.debug.renderPhysicsBody(block.body);
+}
+
+function playerBlockCollideCallback(player, block) {
+    player.body.x = Math.round(player.x / BLOCK_SIZE) * BLOCK_SIZE;
+    player.body.y = Math.round(player.y / BLOCK_SIZE) * BLOCK_SIZE;
+    player.body.velocity.x = 0;
+    player.body.velocity.y = 0;
+
+    block.kill();
+}
+
+function playerPlayerCollideCallback(player1, player2) {
+    player1.body.x = Math.round(player1.x / BLOCK_SIZE) * BLOCK_SIZE;
+    player1.body.y = Math.round(player1.y / BLOCK_SIZE) * BLOCK_SIZE;
+    player1.body.velocity.x = 0;
+    player1.body.velocity.y = 0;
+
+    player2.body.x = player1.body.x;
+    player2.body.y = player1.body.y;
+    player2.body.velocity.x = 0;
+    player2.body.velocity.y = 0;
+}
+
+function isMoving(sprite) {
+    return sprite.body.velocity.x !== 0 || sprite.body.velocity.y !== 0;
+}
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update, render: render });
 </script>
