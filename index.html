@@ -171,6 +171,8 @@ function createLevel() {
         for (var j = 0; j < levels[level].board[i].length; j++) {
             if (levels[level].board[i][j] === LEVEL_NORMAL_BLOCK) {
                 blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
+            } else if (levels[level].board[i][j] === LEVEL_GOAL_BLOCK) {
+                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, 'block-goal');
             }
         }
     }
@@ -183,7 +185,7 @@ function goToPoint(player, point) {
     for (var i = 0; i < blocks.length; i++) {
         var block = blocks.getAt(i)
         if (block.alive) {
-            if (block.x == point.x && block.y == point.y) {
+            if (block.x === point.x && block.y === point.y) {
                 collidingBlock = block;
                 break;
             }
@@ -193,7 +195,7 @@ function goToPoint(player, point) {
     for (var i = 0; i < players.length; i++) {
         var otherPlayer = players.getAt(i)
         if (otherPlayer !== player) {
-            if (otherPlayer.destination.equals(point)) {
+            if (otherPlayer.direction !== player.direction && otherPlayer.destination.equals(point)) {
                 collidingPlayer = otherPlayer;
                 break;
             }
