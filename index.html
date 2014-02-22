@@ -16,10 +16,12 @@ canvas {
 <script src="js/levels.js"></script>
 <script>
 var BLOCK_SIZE = 45;
-var PLAYER_SPEED = BLOCK_SIZE*5;
+var BORDER_WIDTH = 10;
+var PLAYER_SPEED = BLOCK_SIZE*3;
 var DIRECTION = {none: 0, up: 1, right: 2, down: 3, left: 4};
 var BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
 
+var blurX, blurY;
 var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey, rKey;
 var soundHitBlock, soundHitPlayer;
 var backgroundSprite;
@@ -31,8 +33,11 @@ var level;
 var levelComplete;
 
 function preload() {
-    game.load.image('player-1', 'img/player-1.png');
-    game.load.image('player-2', 'img/player-2.png');
+    game.load.script('filterX', 'js/BlurX.js');
+    game.load.script('filterY', 'js/BlurY.js');
+
+    game.load.image('player-1', 'img/player-1-border.png');
+    game.load.image('player-2', 'img/player-2-border.png');
     game.load.image('block-blue', 'img/block-blue.png');
     game.load.image('block-red', 'img/block-red.png');
     game.load.image('block-green', 'img/block-green.png');
@@ -46,6 +51,9 @@ function preload() {
 }
 
 function create() {
+    blurX = game.add.filter('BlurX');
+    blurY = game.add.filter('BlurY');
+
     upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
     downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
@@ -135,7 +143,7 @@ function update() {
 
             var text = "Press any key to continue";
             var style = { font: "36px Arial", fill: "#ff0044", align: "center" };
-            var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks == 0 ? 0 : 54) + 54, text, style);
+            var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks === 0 ? 0 : 54) + 54, text, style);
             t.anchor.setTo(0.5, 1);
 
             game.input.keyboard.onUpCallback = function() {
@@ -169,14 +177,15 @@ function createLevel() {
     blocks = game.add.group();
     players = game.add.group();
 
-    player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1], 'player-1', players);
+    player1 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[0][0] - BORDER_WIDTH, offset.y + BLOCK_SIZE*levels[level].startingPositions[0][1] - BORDER_WIDTH, 'player-1', players);
+    player1.crop = new Phaser.Rectangle(-5,-5, player1.width+5, player1.height+5);
     player1.events.onOutOfBounds.add(outOfBounds);
     player1.name = 'player left';
     player1.destination = new Phaser.Point(player1.x, player1.y);
     player1.direction = DIRECTION.none;
     player1.moving = false;
 
-    player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0], offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1], 'player-2', players);
+    player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0] - BORDER_WIDTH, offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1] - BORDER_WIDTH, 'player-2', players);
     player2.events.onOutOfBounds.add(outOfBounds);
     player2.name = 'player right';
     player2.destination = new Phaser.Point(player2.x, player2.y);
@@ -203,7 +212,7 @@ function goToPoint(player, point) {
     for (var i = 0; i < blocks.length; i++) {
         var block = blocks.getAt(i);
         if (block.alive) {
-            if (block.x === point.x && block.y === point.y) {
+            if (block.x === point.x + BORDER_WIDTH && block.y === point.y + BORDER_WIDTH) {
                 collidingBlock = block;
                 break;
             }
@@ -222,10 +231,18 @@ function goToPoint(player, point) {
 
     player.moving = true;
     player.destination = point;
+    if (game.renderType === Phaser.WEBGL) {
+        if (player.direction === DIRECTION.up || player.direction === DIRECTION.down) {
+            player.filters = [blurY];
+        } else {
+            player.filters = [blurX];
+        }
+    }
     var tween = game.add.tween(player);
     tween.to({x: point.x, y: point.y}, PLAYER_SPEED);
     tween.onComplete.add(function() {
         player.moving = false;
+        player.filters = undefined;
 
         if (collidingBlock) {
             collidingBlock.kill();
@@ -252,7 +269,7 @@ function outOfBounds() {
     // Blend from the current background color to #F00 65% interpolated
     var originalBackground = parseBackgroundColor()
     var tween = game.add.tween({percent:0.0});
-    tween.to({percent: 65.0}, PLAYER_SPEED*3);
+    tween.to({percent: 65.0}, PLAYER_SPEED*6);
     tween.onUpdateCallback(function(tween) {
         var percent = tween._object.percent; // XXX: _object is undocumented
         var color = Phaser.Color.RGBtoWebstring(Phaser.Color.interpolateColor(originalBackground, 0xFF0000, 100, percent, 0));
@@ -298,5 +315,5 @@ function parseBackgroundColor() {
     }
 }
 
-var game = new Phaser.Game(1000, 1000, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000, 1000, Phaser.AUTO, '', {preload: preload, create: create, update: update});
 </script>
