@@ -129,6 +129,9 @@ function update() {
             levelComplete = true;
 
             var text = "Level Complete";
+            if (level === levels.length - 1) {
+                text = "You Win!"
+            }
             var style = { font: "72px Arial", fill: "#ff0044", align: "center" };
             var t = game.add.text(game.camera.width/2, game.camera.height/2, text, style);
             t.anchor.setTo(0.5, 1);
@@ -142,6 +145,9 @@ function update() {
             }
 
             var text = "Press any key to continue";
+            if (level === levels.length - 1) {
+                text = "Press any key to restart game"
+            }
             var style = { font: "36px Arial", fill: "#ff0044", align: "center" };
             var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks === 0 ? 0 : 54) + 54, text, style);
             t.anchor.setTo(0.5, 1);
