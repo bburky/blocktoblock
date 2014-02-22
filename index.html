@@ -19,6 +19,7 @@ var PLAYER_SPEED = BLOCK_SIZE*5;
 var DIRECTION = {none: 0, up: 1, right: 2, down: 3, left: 4};
 
 var upKey, downKey, leftKey, rightKey, wKey, aKey, sKey, dKey;
+var soundHitBlock, soundHitPlayer;
 var players, blocks;
 var player1, player2
 var collidingPlayer;
@@ -30,6 +31,8 @@ function preload() {
     game.load.image('block-red', 'img/block-red.png');
     game.load.image('block-green', 'img/block-green.png');
     game.load.image('block-goal', 'img/block-goal.png');
+    game.load.audio('hit-block', ['snd/ToneWobble.mp3', 'snd/ToneWobble.ogg']);
+    game.load.audio('hit-player', ['snd/Game-Shot.mp3', 'snd/Game-Shot.ogg']);
 }
 
 function create() {
@@ -41,6 +44,9 @@ function create() {
     dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
     aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
     sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+
+    soundHitBlock = game.add.audio('hit-block');
+    soundHitPlayer = game.add.audio('hit-player');
 
     blocks = game.add.group();
     players = game.add.group();
@@ -148,6 +154,7 @@ function goToPoint(player, point) {
         if (collidingBlock) {
             collidingBlock.kill();
             player.direction = DIRECTION.none;
+            soundHitBlock.play();
         }
 
         // This may have been set by the other player
@@ -155,6 +162,7 @@ function goToPoint(player, point) {
             player.direction = DIRECTION.none;
             if (collidingPlayer !== player) {
                 collidingPlayer = undefined;
+                soundHitPlayer.play();
             }
         }
 
