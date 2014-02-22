@@ -110,7 +110,7 @@ function update() {
         }
     }
 
-    if (!levelComplete && blocks.countLiving() === 0) {
+    if (!levelComplete && countLivingGoalBlocks() === 0) {
         levelComplete = true;
 
         var text = "Level Complete";
@@ -118,10 +118,18 @@ function update() {
         var t = game.add.text(game.world.centerX, game.world.centerY, text, style);
         t.anchor.setTo(0.5, 0.5);
 
+        var remainingBlocks = blocks.countLiving();
+        if (remainingBlocks !== 0) {
+            var text = "You missed " + remainingBlocks + " blocks";
+            var style = { font: "32px Arial", fill: "#ff0044", align: "center" };
+            var t = game.add.text(game.world.centerX, game.world.centerY + 72, text, style);
+            t.anchor.setTo(0.5, 0.5);
+        }
+
         var text = "Press any key to continue";
         var style = { font: "32px Arial", fill: "#ff0044", align: "center" };
-        var t = game.add.text(game.world.centerX, game.world.centerY + 72, text, style);
-        t.anchor.setTo(0.5, 0.5);
+        var t = game.add.text(game.world.centerX, game.world.centerY + (remainingBlocks == 0 ? 0 : 72) + 72, text, style);
+        t.anchor.setTo(0.5, 1);
 
         game.input.keyboard.onUpCallback = function() {
             level = (level + 1) % levels.length;
@@ -171,9 +179,11 @@ function createLevel() {
     for (var i = 0; i < levels[level].board.length; i++) {
         for (var j = 0; j < levels[level].board[i].length; j++) {
             if (levels[level].board[i][j] === LEVEL_NORMAL_BLOCK) {
-                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
+                var block = blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, BLOCK_IMAGES[(i+j)%BLOCK_IMAGES.length]);
+                block.goal = false;
             } else if (levels[level].board[i][j] === LEVEL_GOAL_BLOCK) {
-                blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, 'block-goal');
+                var block = blocks.create(offset.x + BLOCK_SIZE*j, offset.y + BLOCK_SIZE*i, 'block-goal');
+                block.goal = true;
             }
         }
     }
@@ -226,6 +236,17 @@ function goToPoint(player, point) {
         }
     });
     tween.start();
+}
+
+function countLivingGoalBlocks() {
+    var count = 0;
+    for (var i = 0; i < blocks.length; i++) {
+        var block = blocks.getAt(i);
+        if (block.alive && block.goal) {
+            count++;
+        }
+    }
+    return count;
 }
 
 var game = new Phaser.Game(1000, 1000, Phaser.AUTO, '', {preload: preload, create: create, update: update});
