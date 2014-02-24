@@ -190,10 +190,26 @@ function update() {
             var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks === 0 ? 0 : 54) + 54, text, style);
             t.anchor.setTo(0.5, 1);
 
-            game.input.keyboard.onUpCallback = function() {
+            // TODO: this really should be onDown and verify that all other keys are up
+            game.input.keyboard.onUpCallback = function(e) {
+                // Ignore the onUp if it's the player releasing the direction
+                if (player1.prevDirection !== DIRECTION.none || player2.prevDirection !== DIRECTION.none) {
+                    // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
+                    player1.prevDirection = DIRECTION.none;
+                    player2.prevDirection = DIRECTION.none;
+                    return;
+                }
+
+                // If the key was restart, don't advance levels
+                if (e.keyCode === Phaser.Keyboard.R) {
+                    createLevel();
+                    return;
+                }
+
                 level = (level + 1) % levels.length;
                 createLevel();
             }
+            // TODO: This really should have a separate callback
             game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
         }
 
@@ -339,8 +355,21 @@ function outOfBounds() {
     t.fixedToCamera = true;
     t.anchor.setTo(0.5, 1);
 
-    game.input.keyboard.onUpCallback = createLevel;
-    game.input.onUp.addOnce(createLevel);
+    // TODO: this really should be onDown and verify that all other keys are up
+    game.input.keyboard.onUpCallback = function() {
+        // Ignore the onUp if it's the player releasing the direction
+        if (player1.prevDirection !== DIRECTION.none || player2.prevDirection !== DIRECTION.none) {
+            // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
+            // Really want to check that all keys are up
+            player1.prevDirection = DIRECTION.none;
+            player2.prevDirection = DIRECTION.none;
+            return;
+        }
+
+        createLevel();
+    };
+    // Don't restart level untill all keys released
+    game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
 }
 
 function countLivingGoalBlocks() {
