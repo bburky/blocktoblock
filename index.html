@@ -87,25 +87,54 @@ function update() {
             createLevel();
         }
 
-        if (wKey.isDown && player1.direction === DIRECTION.none) {
-            player1.direction = DIRECTION.up;
-        } else if (sKey.isDown && player1.direction === DIRECTION.none) {
-            player1.direction = DIRECTION.down;
-        } else if (aKey.isDown && player1.direction === DIRECTION.none) {
-            player1.direction = DIRECTION.left;
-        } else if (dKey.isDown && player1.direction === DIRECTION.none) {
-            player1.direction = DIRECTION.right;
+        if (player1.direction === DIRECTION.none) {
+            if (wKey.isDown && player1.prevDirection !== DIRECTION.up) {
+                player1.prevDirection = player1.direction = DIRECTION.up;
+            } else if (sKey.isDown && player1.prevDirection !== DIRECTION.down) {
+                player1.prevDirection = player1.direction = DIRECTION.down;
+            } else if (aKey.isDown && player1.prevDirection !== DIRECTION.left) {
+                player1.prevDirection = player1.direction = DIRECTION.left;
+            } else if (dKey.isDown && player1.prevDirection !== DIRECTION.right) {
+                player1.prevDirection = player1.direction = DIRECTION.right;
+            }
+        }
+        if (wKey.isUp && player1.prevDirection === DIRECTION.up) {
+            player1.prevDirection = DIRECTION.none;
+        }
+        if (sKey.isUp && player1.prevDirection === DIRECTION.down) {
+            player1.prevDirection = DIRECTION.none;
+        }
+        if (aKey.isUp && player1.prevDirection === DIRECTION.left) {
+            player1.prevDirection = DIRECTION.none;
+        }
+        if (dKey.isUp && player1.prevDirection === DIRECTION.right) {
+            player1.prevDirection = DIRECTION.none;
         }
 
-        if (upKey.isDown && player2.direction === DIRECTION.none) {
-            player2.direction = DIRECTION.up;
-        } else if (downKey.isDown && player2.direction === DIRECTION.none) {
-            player2.direction = DIRECTION.down;
-        } else if (leftKey.isDown && player2.direction === DIRECTION.none) {
-            player2.direction = DIRECTION.left;
-        } else if (rightKey.isDown && player2.direction === DIRECTION.none) {
-            player2.direction = DIRECTION.right;
+        if (player2.direction === DIRECTION.none) {
+            if (upKey.isDown && player2.prevDirection !== DIRECTION.up) {
+                player2.prevDirection = player2.direction = DIRECTION.up;
+            } else if (downKey.isDown && player2.prevDirection !== DIRECTION.down) {
+                player2.prevDirection = player2.direction = DIRECTION.down;
+            } else if (leftKey.isDown && player2.prevDirection !== DIRECTION.left) {
+                player2.prevDirection = player2.direction = DIRECTION.left;
+            } else if (rightKey.isDown && player2.prevDirection !== DIRECTION.right) {
+                player2.prevDirection = player2.direction = DIRECTION.right;
+            }
         }
+        if (upKey.isUp && player2.prevDirection === DIRECTION.up) {
+            player2.prevDirection = DIRECTION.none;
+        }
+        if (downKey.isUp && player2.prevDirection === DIRECTION.down) {
+            player2.prevDirection = DIRECTION.none;
+        }
+        if (leftKey.isUp && player2.prevDirection === DIRECTION.left) {
+            player2.prevDirection = DIRECTION.none;
+        }
+        if (rightKey.isUp && player2.prevDirection === DIRECTION.right) {
+            player2.prevDirection = DIRECTION.none;
+        }
+
 
         for (var i = 0; i < players.length; i++) {
             var player = players.getAt(i);
@@ -161,10 +190,26 @@ function update() {
             var t = game.add.text(game.camera.width/2, game.camera.height/2 + (remainingBlocks === 0 ? 0 : 54) + 54, text, style);
             t.anchor.setTo(0.5, 1);
 
-            game.input.keyboard.onUpCallback = function() {
+            // TODO: this really should be onDown and verify that all other keys are up
+            game.input.keyboard.onUpCallback = function(e) {
+                // Ignore the onUp if it's the player releasing the direction
+                if (player1.prevDirection !== DIRECTION.none || player2.prevDirection !== DIRECTION.none) {
+                    // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
+                    player1.prevDirection = DIRECTION.none;
+                    player2.prevDirection = DIRECTION.none;
+                    return;
+                }
+
+                // If the key was restart, don't advance levels
+                if (e.keyCode === Phaser.Keyboard.R) {
+                    createLevel();
+                    return;
+                }
+
                 level = (level + 1) % levels.length;
                 createLevel();
             }
+            // TODO: This really should have a separate callback
             game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
         }
 
@@ -199,6 +244,7 @@ function createLevel() {
     player1.name = 'player left';
     player1.destination = new Phaser.Point(player1.x, player1.y);
     player1.direction = DIRECTION.none;
+    player1.prevDirection = DIRECTION.none;
     player1.moving = false;
 
     player2 = players.create(offset.x + BLOCK_SIZE*levels[level].startingPositions[1][0] - BORDER_WIDTH, offset.y + BLOCK_SIZE*levels[level].startingPositions[1][1] - BORDER_WIDTH, 'player-2', players);
@@ -206,7 +252,9 @@ function createLevel() {
     player2.name = 'player right';
     player2.destination = new Phaser.Point(player2.x, player2.y);
     player2.direction = DIRECTION.none;
+    player2.prevDirection = DIRECTION.none;
     player2.moving = false;
+
 
     for (var i = 0; i < levels[level].board.length; i++) {
         for (var j = 0; j < levels[level].board[i].length; j++) {
@@ -261,7 +309,7 @@ function goToPoint(player, point) {
         player.filters = undefined;
 
         if (collidingBlock) {
-            collidingBlock.kill();
+            collidingBlock.kill(); // Note that if both players hit the same block, then it will be killed twice
             player.direction = DIRECTION.none;
             soundHitBlock.play();
         }
@@ -307,8 +355,21 @@ function outOfBounds() {
     t.fixedToCamera = true;
     t.anchor.setTo(0.5, 1);
 
-    game.input.keyboard.onUpCallback = createLevel;
-    game.input.onUp.addOnce(createLevel);
+    // TODO: this really should be onDown and verify that all other keys are up
+    game.input.keyboard.onUpCallback = function() {
+        // Ignore the onUp if it's the player releasing the direction
+        if (player1.prevDirection !== DIRECTION.none || player2.prevDirection !== DIRECTION.none) {
+            // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
+            // Really want to check that all keys are up
+            player1.prevDirection = DIRECTION.none;
+            player2.prevDirection = DIRECTION.none;
+            return;
+        }
+
+        createLevel();
+    };
+    // Don't restart level untill all keys released
+    game.input.onUp.addOnce(game.input.keyboard.onUpCallback);
 }
 
 function countLivingGoalBlocks() {
