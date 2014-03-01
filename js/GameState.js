@@ -4,7 +4,7 @@
 (function () {
     "use strict";
 
-    BlockToBlock.Game = function (game) {
+    BlockToBlock.GameState = function (game) {
         this.game = game;
 
         this.levelComplete = false;
@@ -37,30 +37,29 @@
     };
 
     // Shortcut
-    var Game = BlockToBlock.Game;
+    var GameState = BlockToBlock.GameState;
 
     // Constants
-    Game.STATE = 'game';
+    GameState.STATE = 'game';
 
-    Game.BLOCK_SIZE = 45;
-    Game.BORDER_WIDTH = 10;
-    Game.PLAYER_SPEED = Game.BLOCK_SIZE * 2.25;
-    Game.DIRECTION = {
+    GameState.BLOCK_SIZE = 45;
+    GameState.PLAYER_SPEED = GameState.BLOCK_SIZE * 2.25;
+    GameState.DIRECTION = {
         none: 0,
         up: 1,
         right: 2,
         down: 3,
         left: 4
     };
-    Game.BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
+    GameState.BLOCK_IMAGES = ['block-blue', 'block-red', 'block-green'];
 
-    Game.LEVEL_NORMAL_BLOCK = 2;
-    Game.LEVEL_GOAL_BLOCK = 1;
+    GameState.LEVEL_NORMAL_BLOCK = 2;
+    GameState.LEVEL_GOAL_BLOCK = 1;
 
     // Static variables
-    Game.level = 0;
+    GameState.level = 0;
 
-    Game.prototype = {
+    GameState.prototype = {
 
         preload: function () {
             var i;
@@ -73,6 +72,9 @@
             this.game.load.image('block-blue', 'img/block-blue.png');
             this.game.load.image('block-red', 'img/block-red.png');
             this.game.load.image('block-green', 'img/block-green.png');
+            this.game.load.image('block-blue-arrow', 'img/block-blue-arrow.png');
+            this.game.load.image('block-red-arrow', 'img/block-red-arrow.png');
+            this.game.load.image('block-green-arrow', 'img/block-green-arrow.png');
             this.game.load.image('block-goal', 'img/block-goal.png');
             this.game.load.audio('hit-block', ['snd/ToneWobble.mp3', 'snd/ToneWobble.ogg']);
             this.game.load.audio('hit-player', ['snd/Game-Shot.mp3', 'snd/Game-Shot.ogg']);
@@ -104,10 +106,10 @@
             this.soundHitBlock = this.game.add.audio('hit-block');
             this.soundHitPlayer = this.game.add.audio('hit-player');
 
-            document.body.style.background = BlockToBlock.levels[Game.level].backgroundStyle;
-            this.game.stage.backgroundColor = BlockToBlock.levels[Game.level].backgroundStyle;
+            document.body.style.background = BlockToBlock.levels[GameState.level].backgroundStyle;
+            this.game.stage.backgroundColor = BlockToBlock.levels[GameState.level].backgroundStyle;
 
-            this.backgroundSprite = this.game.add.sprite(0, 0, BlockToBlock.levels[Game.level].backgroundImgSrc);
+            this.backgroundSprite = this.game.add.sprite(0, 0, BlockToBlock.levels[GameState.level].backgroundImgSrc);
             this.backgroundSprite.centerOn(this.game.width / 2, this.game.height / 2);
             var offset = {
                 x: this.backgroundSprite.x,
@@ -123,31 +125,52 @@
 
             this.levelComplete = false;
 
-            this.player1 = this.players.create(offset.x + Game.BLOCK_SIZE * BlockToBlock.levels[Game.level].startingPositions[0][0] - Game.BORDER_WIDTH, offset.y + Game.BLOCK_SIZE * BlockToBlock.levels[Game.level].startingPositions[0][1] - Game.BORDER_WIDTH, 'player-1', this.players);
-            this.player1.crop = new Phaser.Rectangle(-5, -5, this.player1.width + 5, this.player1.height + 5);
-            this.player1.events.onOutOfBounds.add(this.outOfBounds, this);
-            this.player1.name = 'player left';
-            this.player1.destination = new Phaser.Point(this.player1.x, this.player1.y);
-            this.player1.direction = Game.DIRECTION.none;
-            this.player1.prevDirection = Game.DIRECTION.none;
-            this.player1.moving = false;
+            this.player1 = new BlockToBlock.Player(
+                this,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][0],
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][1],
+                'player-1'
+            );
+            this.players.add(this.player1);
 
-            this.player2 = this.players.create(offset.x + Game.BLOCK_SIZE * BlockToBlock.levels[Game.level].startingPositions[1][0] - Game.BORDER_WIDTH, offset.y + Game.BLOCK_SIZE * BlockToBlock.levels[Game.level].startingPositions[1][1] - Game.BORDER_WIDTH, 'player-2', this.players);
-            this.player2.events.onOutOfBounds.add(this.outOfBounds, this);
-            this.player2.name = 'player right';
-            this.player2.destination = new Phaser.Point(this.player2.x, this.player2.y);
-            this.player2.direction = Game.DIRECTION.none;
-            this.player2.prevDirection = Game.DIRECTION.none;
-            this.player2.moving = false;
+            this.player2 = new BlockToBlock.Player(
+                this,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][0],
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][1],
+                'player-2'
+            );
+            this.players.add(this.player2);
 
-            for (var i = 0; i < BlockToBlock.levels[Game.level].board.length; i++) {
-                for (var j = 0; j < BlockToBlock.levels[Game.level].board[i].length; j++) {
-                    if (BlockToBlock.levels[Game.level].board[i][j] === Game.LEVEL_NORMAL_BLOCK) {
-                        block = this.blocks.create(offset.x + Game.BLOCK_SIZE * j, offset.y + Game.BLOCK_SIZE * i, Game.BLOCK_IMAGES[(i + j) % Game.BLOCK_IMAGES.length]);
-                        block.goal = false;
-                    } else if (BlockToBlock.levels[Game.level].board[i][j] === Game.LEVEL_GOAL_BLOCK) {
-                        block = this.blocks.create(offset.x + Game.BLOCK_SIZE * j, offset.y + Game.BLOCK_SIZE * i, 'block-goal');
-                        block.goal = true;
+            for (var i = 0; i < BlockToBlock.levels[GameState.level].board.length; i++) {
+                for (var j = 0; j < BlockToBlock.levels[GameState.level].board[i].length; j++) {
+                    if (BlockToBlock.levels[GameState.level].board[i][j] === GameState.LEVEL_NORMAL_BLOCK) {
+                        block = new BlockToBlock.Block(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            GameState.BLOCK_IMAGES[(i + j) % GameState.BLOCK_IMAGES.length],
+                            this.soundHitBlock
+                        );
+                        this.blocks.add(block);
+                    } else if (BlockToBlock.levels[GameState.level].board[i][j] === GameState.LEVEL_GOAL_BLOCK) {
+                        block = new BlockToBlock.GoalBlock(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            this.soundHitBlock
+                        );
+                        this.blocks.add(block);
+                    // TODO: make better
+                    } else if (BlockToBlock.levels[GameState.level].board[i][j] === 3) {
+                        block = new BlockToBlock.BounceBlock(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            GameState.BLOCK_IMAGES[(i + j) % GameState.BLOCK_IMAGES.length] + '-arrow',
+                            this.soundHitBlock,
+                            GameState.DIRECTION.right
+                        );
+                        this.blocks.add(block);
                     }
                 }
             }
@@ -165,55 +188,55 @@
             if (!this.levelComplete) {
 
                 if (this.rKey.isDown) {
-                    this.game.state.start(Game.STATE);
+                    this.game.state.start(GameState.STATE);
                 }
 
-                if (this.player1.direction === Game.DIRECTION.none) {
-                    if (this.wKey.isDown && this.player1.prevDirection !== Game.DIRECTION.up) {
-                        this.player1.prevDirection = this.player1.direction = Game.DIRECTION.up;
-                    } else if (this.sKey.isDown && this.player1.prevDirection !== Game.DIRECTION.down) {
-                        this.player1.prevDirection = this.player1.direction = Game.DIRECTION.down;
-                    } else if (this.aKey.isDown && this.player1.prevDirection !== Game.DIRECTION.left) {
-                        this.player1.prevDirection = this.player1.direction = Game.DIRECTION.left;
-                    } else if (this.dKey.isDown && this.player1.prevDirection !== Game.DIRECTION.right) {
-                        this.player1.prevDirection = this.player1.direction = Game.DIRECTION.right;
+                if (this.player1.direction === GameState.DIRECTION.none) {
+                    if (this.wKey.isDown && this.player1.prevDirection !== GameState.DIRECTION.up) {
+                        this.player1.prevDirection = this.player1.direction = GameState.DIRECTION.up;
+                    } else if (this.sKey.isDown && this.player1.prevDirection !== GameState.DIRECTION.down) {
+                        this.player1.prevDirection = this.player1.direction = GameState.DIRECTION.down;
+                    } else if (this.aKey.isDown && this.player1.prevDirection !== GameState.DIRECTION.left) {
+                        this.player1.prevDirection = this.player1.direction = GameState.DIRECTION.left;
+                    } else if (this.dKey.isDown && this.player1.prevDirection !== GameState.DIRECTION.right) {
+                        this.player1.prevDirection = this.player1.direction = GameState.DIRECTION.right;
                     }
                 }
-                if (this.wKey.isUp && this.player1.prevDirection === Game.DIRECTION.up) {
-                    this.player1.prevDirection = Game.DIRECTION.none;
+                if (this.wKey.isUp && this.player1.prevDirection === GameState.DIRECTION.up) {
+                    this.player1.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.sKey.isUp && this.player1.prevDirection === Game.DIRECTION.down) {
-                    this.player1.prevDirection = Game.DIRECTION.none;
+                if (this.sKey.isUp && this.player1.prevDirection === GameState.DIRECTION.down) {
+                    this.player1.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.aKey.isUp && this.player1.prevDirection === Game.DIRECTION.left) {
-                    this.player1.prevDirection = Game.DIRECTION.none;
+                if (this.aKey.isUp && this.player1.prevDirection === GameState.DIRECTION.left) {
+                    this.player1.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.dKey.isUp && this.player1.prevDirection === Game.DIRECTION.right) {
-                    this.player1.prevDirection = Game.DIRECTION.none;
+                if (this.dKey.isUp && this.player1.prevDirection === GameState.DIRECTION.right) {
+                    this.player1.prevDirection = GameState.DIRECTION.none;
                 }
 
-                if (this.player2.direction === Game.DIRECTION.none) {
-                    if (this.upKey.isDown && this.player2.prevDirection !== Game.DIRECTION.up) {
-                        this.player2.prevDirection = this.player2.direction = Game.DIRECTION.up;
-                    } else if (this.downKey.isDown && this.player2.prevDirection !== Game.DIRECTION.down) {
-                        this.player2.prevDirection = this.player2.direction = Game.DIRECTION.down;
-                    } else if (this.leftKey.isDown && this.player2.prevDirection !== Game.DIRECTION.left) {
-                        this.player2.prevDirection = this.player2.direction = Game.DIRECTION.left;
-                    } else if (this.rightKey.isDown && this.player2.prevDirection !== Game.DIRECTION.right) {
-                        this.player2.prevDirection = this.player2.direction = Game.DIRECTION.right;
+                if (this.player2.direction === GameState.DIRECTION.none) {
+                    if (this.upKey.isDown && this.player2.prevDirection !== GameState.DIRECTION.up) {
+                        this.player2.prevDirection = this.player2.direction = GameState.DIRECTION.up;
+                    } else if (this.downKey.isDown && this.player2.prevDirection !== GameState.DIRECTION.down) {
+                        this.player2.prevDirection = this.player2.direction = GameState.DIRECTION.down;
+                    } else if (this.leftKey.isDown && this.player2.prevDirection !== GameState.DIRECTION.left) {
+                        this.player2.prevDirection = this.player2.direction = GameState.DIRECTION.left;
+                    } else if (this.rightKey.isDown && this.player2.prevDirection !== GameState.DIRECTION.right) {
+                        this.player2.prevDirection = this.player2.direction = GameState.DIRECTION.right;
                     }
                 }
-                if (this.upKey.isUp && this.player2.prevDirection === Game.DIRECTION.up) {
-                    this.player2.prevDirection = Game.DIRECTION.none;
+                if (this.upKey.isUp && this.player2.prevDirection === GameState.DIRECTION.up) {
+                    this.player2.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.downKey.isUp && this.player2.prevDirection === Game.DIRECTION.down) {
-                    this.player2.prevDirection = Game.DIRECTION.none;
+                if (this.downKey.isUp && this.player2.prevDirection === GameState.DIRECTION.down) {
+                    this.player2.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.leftKey.isUp && this.player2.prevDirection === Game.DIRECTION.left) {
-                    this.player2.prevDirection = Game.DIRECTION.none;
+                if (this.leftKey.isUp && this.player2.prevDirection === GameState.DIRECTION.left) {
+                    this.player2.prevDirection = GameState.DIRECTION.none;
                 }
-                if (this.rightKey.isUp && this.player2.prevDirection === Game.DIRECTION.right) {
-                    this.player2.prevDirection = Game.DIRECTION.none;
+                if (this.rightKey.isUp && this.player2.prevDirection === GameState.DIRECTION.right) {
+                    this.player2.prevDirection = GameState.DIRECTION.none;
                 }
 
 
@@ -221,23 +244,23 @@
                     var player = this.players.getAt(i);
                     if (!player.moving) {
                         switch (player.direction) {
-                        case Game.DIRECTION.up:
-                            newPosition = new Phaser.Point(player.x, player.y - Game.BLOCK_SIZE);
+                        case GameState.DIRECTION.up:
+                            newPosition = new Phaser.Point(player.x, player.y - GameState.BLOCK_SIZE);
                             this.goToPoint(player, newPosition);
                             break;
 
-                        case Game.DIRECTION.down:
-                            newPosition = new Phaser.Point(player.x, player.y + Game.BLOCK_SIZE);
+                        case GameState.DIRECTION.down:
+                            newPosition = new Phaser.Point(player.x, player.y + GameState.BLOCK_SIZE);
                             this.goToPoint(player, newPosition);
                             break;
 
-                        case Game.DIRECTION.left:
-                            newPosition = new Phaser.Point(player.x - Game.BLOCK_SIZE, player.y);
+                        case GameState.DIRECTION.left:
+                            newPosition = new Phaser.Point(player.x - GameState.BLOCK_SIZE, player.y);
                             this.goToPoint(player, newPosition);
                             break;
 
-                        case Game.DIRECTION.right:
-                            newPosition = new Phaser.Point(player.x + Game.BLOCK_SIZE, player.y);
+                        case GameState.DIRECTION.right:
+                            newPosition = new Phaser.Point(player.x + GameState.BLOCK_SIZE, player.y);
                             this.goToPoint(player, newPosition);
                             break;
                         }
@@ -248,7 +271,7 @@
                     this.levelComplete = true;
 
                     text = "Level Complete";
-                    if (Game.level === BlockToBlock.levels.length - 1) {
+                    if (GameState.level === BlockToBlock.levels.length - 1) {
                         text = "You Win!";
                     }
                     style = {
@@ -272,7 +295,7 @@
                     }
 
                     text = "Press any key to continue";
-                    if (Game.level === BlockToBlock.levels.length - 1) {
+                    if (GameState.level === BlockToBlock.levels.length - 1) {
                         text = "Press any key to restart game";
                     }
                     style = {
@@ -287,21 +310,21 @@
                     this.game.input.keyboard.callbackContext = this;
                     this.game.input.keyboard.onUpCallback = function (e) {
                         // Ignore the onUp if it's the player releasing the direction
-                        if (this.player1.prevDirection !== Game.DIRECTION.none || this.player2.prevDirection !== Game.DIRECTION.none) {
+                        if (this.player1.prevDirection !== GameState.DIRECTION.none || this.player2.prevDirection !== GameState.DIRECTION.none) {
                             // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
-                            this.player1.prevDirection = Game.DIRECTION.none;
-                            this.player2.prevDirection = Game.DIRECTION.none;
+                            this.player1.prevDirection = GameState.DIRECTION.none;
+                            this.player2.prevDirection = GameState.DIRECTION.none;
                             return;
                         }
 
                         // If the key was restart, don't advance levels
                         if (e.keyCode === Phaser.Keyboard.R) {
-                            this.game.state.start(Game.STATE);
+                            this.game.state.start(GameState.STATE);
                             return;
                         }
 
-                        Game.level = (Game.level + 1) % BlockToBlock.levels.length;
-                        this.game.state.start(Game.STATE);
+                        GameState.level = (GameState.level + 1) % BlockToBlock.levels.length;
+                        this.game.state.start(GameState.STATE);
                     };
                     // TODO: This really should have a separate callback
                     this.game.input.onUp.addOnce(this.game.input.keyboard.onUpCallback, this);
@@ -318,7 +341,7 @@
             for (i = 0; i < this.blocks.length; i++) {
                 var block = this.blocks.getAt(i);
                 if (block.alive) {
-                    if (block.x === point.x + Game.BORDER_WIDTH && block.y === point.y + Game.BORDER_WIDTH) {
+                    if (block.x === point.x && block.y === point.y) {
                         collidingBlock = block;
                         break;
                     }
@@ -338,7 +361,7 @@
             player.moving = true;
             player.destination = point;
             if (this.game.renderType === Phaser.WEBGL) {
-                if (player.direction === Game.DIRECTION.up || player.direction === Game.DIRECTION.down) {
+                if (player.direction === GameState.DIRECTION.up || player.direction === GameState.DIRECTION.down) {
                     player.filters = [this.blurY];
                 } else {
                     player.filters = [this.blurX];
@@ -348,22 +371,22 @@
             tween.to({
                 x: point.x,
                 y: point.y
-            }, Game.PLAYER_SPEED);
+            }, GameState.PLAYER_SPEED);
             tween.onComplete.add(function () {
                 player.moving = false;
-                player.filters = undefined;
+                player.filters = null;
 
                 if (collidingBlock) {
+                    player.direction = GameState.DIRECTION.none;
+                    collidingBlock.killedBy = player;
                     collidingBlock.kill(); // Note that if both players hit the same block, then it will be killed twice
-                    player.direction = Game.DIRECTION.none;
-                    this.soundHitBlock.play();
                 }
 
                 // This may have been set by the other player
                 if (this.collidingPlayer) {
-                    player.direction = Game.DIRECTION.none;
+                    player.direction = GameState.DIRECTION.none;
                     if (this.collidingPlayer !== player) {
-                        this.collidingPlayer = undefined;
+                        this.collidingPlayer = null;
                         this.soundHitPlayer.play();
                     }
                 }
@@ -384,7 +407,7 @@
             });
             tween.to({
                 percent: 65.0
-            }, Game.PLAYER_SPEED * 6);
+            }, GameState.PLAYER_SPEED * 6);
             tween.onUpdateCallback(function (tween) {
                 var percent = tween._object.percent; // XXX: _object is undocumented
                 var color = Phaser.Color.RGBtoWebstring(Phaser.Color.interpolateColor(originalBackground, 0xFF0000, 100, percent, 0));
@@ -418,15 +441,15 @@
             this.game.input.keyboard.callbackContext = this;
             this.game.input.keyboard.onUpCallback = function () {
                 // Ignore the onUp if it's the player releasing the direction
-                if (this.player1.prevDirection !== Game.DIRECTION.none || this.player2.prevDirection !== Game.DIRECTION.none) {
+                if (this.player1.prevDirection !== GameState.DIRECTION.none || this.player2.prevDirection !== GameState.DIRECTION.none) {
                     // FIXME: This only sort of works if the player holds down two directions and releases both during restart?
                     // Really want to check that all keys are up
-                    this.player1.prevDirection = Game.DIRECTION.none;
-                    this.player2.prevDirection = Game.DIRECTION.none;
+                    this.player1.prevDirection = GameState.DIRECTION.none;
+                    this.player2.prevDirection = GameState.DIRECTION.none;
                     return;
                 }
 
-                this.game.state.start(Game.STATE);
+                this.game.state.start(GameState.STATE);
             };
             // Don't restart level untill all keys released
             this.game.input.onUp.addOnce(this.game.input.keyboard.onUpCallback, this);

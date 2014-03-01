@@ -24,12 +24,14 @@ canvas {
 var BlockToBlock = {};
 </script>
 
-<script src="js/Game.js"></script>
+<script src="js/GameState.js"></script>
+<script src="js/Player.js"></script>
+<script src="js/Block.js"></script>
 <script src="js/levels.js"></script>
 
 <script>
 (function () {
     var game = new Phaser.Game(1000, 1000, Phaser.AUTO);
-    game.state.add(BlockToBlock.Game.STATE, BlockToBlock.Game, true);
+    game.state.add(BlockToBlock.GameState.STATE, BlockToBlock.GameState, true);
 })();
 </script>
