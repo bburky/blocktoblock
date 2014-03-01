@@ -1,4 +1,7 @@
-var levels = [
+/* jslint browser:true */
+/* global Phaser:false, BlockToBlock */
+
+BlockToBlock.levels = [
   {
     backgroundImgSrc: 'img/level1.png',
     backgroundStyle: '#55f',
