@@ -123,22 +123,21 @@
 
             this.levelComplete = false;
 
-            this.player1 = this.players.create(offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][0] - GameState.BORDER_WIDTH, offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][1] - GameState.BORDER_WIDTH, 'player-1', this.players);
-            this.player1.crop = new Phaser.Rectangle(-5, -5, this.player1.width + 5, this.player1.height + 5);
-            this.player1.events.onOutOfBounds.add(this.outOfBounds, this);
-            this.player1.name = 'player left';
-            this.player1.destination = new Phaser.Point(this.player1.x, this.player1.y);
-            this.player1.direction = GameState.DIRECTION.none;
-            this.player1.prevDirection = GameState.DIRECTION.none;
-            this.player1.moving = false;
+            this.player1 = new BlockToBlock.Player(
+                this,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][0] - GameState.BORDER_WIDTH,
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][1] - GameState.BORDER_WIDTH,
+                'player-1'
+            );
+            this.players.add(this.player1);
 
-            this.player2 = this.players.create(offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][0] - GameState.BORDER_WIDTH, offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][1] - GameState.BORDER_WIDTH, 'player-2', this.players);
-            this.player2.events.onOutOfBounds.add(this.outOfBounds, this);
-            this.player2.name = 'player right';
-            this.player2.destination = new Phaser.Point(this.player2.x, this.player2.y);
-            this.player2.direction = GameState.DIRECTION.none;
-            this.player2.prevDirection = GameState.DIRECTION.none;
-            this.player2.moving = false;
+            this.player2 = new BlockToBlock.Player(
+                this,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][0] - GameState.BORDER_WIDTH,
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][1] - GameState.BORDER_WIDTH,
+                'player-2'
+            );
+            this.players.add(this.player2);
 
             for (var i = 0; i < BlockToBlock.levels[GameState.level].board.length; i++) {
                 for (var j = 0; j < BlockToBlock.levels[GameState.level].board[i].length; j++) {
