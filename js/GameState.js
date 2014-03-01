@@ -361,7 +361,7 @@
             }, GameState.PLAYER_SPEED);
             tween.onComplete.add(function () {
                 player.moving = false;
-                player.filters = undefined;
+                player.filters = null;
 
                 if (collidingBlock) {
                     collidingBlock.killedBy = player;
@@ -373,7 +373,7 @@
                 if (this.collidingPlayer) {
                     player.direction = GameState.DIRECTION.none;
                     if (this.collidingPlayer !== player) {
-                        this.collidingPlayer = undefined;
+                        this.collidingPlayer = null;
                         this.soundHitPlayer.play();
                     }
                 }
