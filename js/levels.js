@@ -4,7 +4,7 @@
 BlockToBlock.levels = [
   {
     backgroundImgSrc: 'img/level1.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#3B94FF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -28,7 +28,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level2.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#32A9E8',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -49,7 +49,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level3.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#44E3FF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -73,7 +73,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level4.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#32E8DF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -95,7 +95,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level5.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#37FFCA',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -112,7 +112,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level6.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#32E8DF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -133,7 +133,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level7.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#44E3FF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -154,7 +154,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level8.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#32A9E8',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -177,7 +177,7 @@ BlockToBlock.levels = [
   },
   {
     backgroundImgSrc: 'img/level9.png',
-    backgroundStyle: '#55f',
+    backgroundStyle: '#3B94FF',
     board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 2, 0],
