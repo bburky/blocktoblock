@@ -73,6 +73,9 @@
             this.game.load.image('block-blue', 'img/block-blue.png');
             this.game.load.image('block-red', 'img/block-red.png');
             this.game.load.image('block-green', 'img/block-green.png');
+            this.game.load.image('block-blue-arrow', 'img/block-blue-arrow.png');
+            this.game.load.image('block-red-arrow', 'img/block-red-arrow.png');
+            this.game.load.image('block-green-arrow', 'img/block-green-arrow.png');
             this.game.load.image('block-goal', 'img/block-goal.png');
             this.game.load.audio('hit-block', ['snd/ToneWobble.mp3', 'snd/ToneWobble.ogg']);
             this.game.load.audio('hit-player', ['snd/Game-Shot.mp3', 'snd/Game-Shot.ogg']);
@@ -156,6 +159,17 @@
                             offset.x + GameState.BLOCK_SIZE * j,
                             offset.y + GameState.BLOCK_SIZE * i,
                             this.soundHitBlock
+                        );
+                        this.blocks.add(block);
+                    // TODO: make better
+                    } else if (BlockToBlock.levels[GameState.level].board[i][j] === 3) {
+                        block = new BlockToBlock.BounceBlock(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            GameState.BLOCK_IMAGES[(i + j) % GameState.BLOCK_IMAGES.length] + '-arrow',
+                            this.soundHitBlock,
+                            GameState.DIRECTION.right
                         );
                         this.blocks.add(block);
                     }
@@ -364,9 +378,9 @@
                 player.filters = null;
 
                 if (collidingBlock) {
+                    player.direction = GameState.DIRECTION.none;
                     collidingBlock.killedBy = player;
                     collidingBlock.kill(); // Note that if both players hit the same block, then it will be killed twice
-                    player.direction = GameState.DIRECTION.none;
                 }
 
                 // This may have been set by the other player

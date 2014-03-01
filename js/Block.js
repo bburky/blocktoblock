@@ -41,13 +41,39 @@
     // The constructor will be called at runtime
     extend(Phaser.Sprite, BlockToBlock.Block);
 
+
+
     BlockToBlock.GoalBlock = function (gameState, x, y, killSound) {
         BlockToBlock.Block.call(this, gameState, x, y, 'block-goal', killSound);
 
         this.goal = true;
     };
 
-    // BlockToBlock.Player extends Phaser.Sprite
-    // The constructor will be called at runtime
+    // BlockToBlock.GoalBlock extends Phaser.Block
     extend(BlockToBlock.Block, BlockToBlock.GoalBlock);
+
+
+
+    BlockToBlock.BounceBlock = function (gameState, x, y, spriteKey, killSound, bounceDirection) {
+        BlockToBlock.Block.call(this, gameState, x, y, spriteKey, killSound);
+
+        this.bounceDirection = bounceDirection;
+
+        // TODO: need to do anchor.setTo() things first
+        //this.angle = 90;
+
+        this.events.onKilled.add(function () {
+            this.killedBy.direction = this.bounceDirection;
+            if (this.game.renderType === Phaser.WEBGL) {
+                if (this.bounceDirection === BlockToBlock.GameState.DIRECTION.up || this.bounceDirection === BlockToBlock.GameState.DIRECTION.down) {
+                    this.killedBy.filters = [this.gameState.blurY];
+                } else {
+                    this.killedBy.filters = [this.gameState.blurX];
+                }
+            }
+        }, this);
+    };
+
+    // BlockToBlock.GoalBlock extends Phaser.Block
+    extend(BlockToBlock.Block, BlockToBlock.BounceBlock);
 })();
