@@ -142,11 +142,22 @@
             for (var i = 0; i < BlockToBlock.levels[GameState.level].board.length; i++) {
                 for (var j = 0; j < BlockToBlock.levels[GameState.level].board[i].length; j++) {
                     if (BlockToBlock.levels[GameState.level].board[i][j] === GameState.LEVEL_NORMAL_BLOCK) {
-                        block = this.blocks.create(offset.x + GameState.BLOCK_SIZE * j, offset.y + GameState.BLOCK_SIZE * i, GameState.BLOCK_IMAGES[(i + j) % GameState.BLOCK_IMAGES.length]);
-                        block.goal = false;
+                        block = new BlockToBlock.Block(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            GameState.BLOCK_IMAGES[(i + j) % GameState.BLOCK_IMAGES.length],
+                            this.soundHitBlock
+                        );
+                        this.blocks.add(block);
                     } else if (BlockToBlock.levels[GameState.level].board[i][j] === GameState.LEVEL_GOAL_BLOCK) {
-                        block = this.blocks.create(offset.x + GameState.BLOCK_SIZE * j, offset.y + GameState.BLOCK_SIZE * i, 'block-goal');
-                        block.goal = true;
+                        block = new BlockToBlock.GoalBlock(
+                            this,
+                            offset.x + GameState.BLOCK_SIZE * j,
+                            offset.y + GameState.BLOCK_SIZE * i,
+                            this.soundHitBlock
+                        );
+                        this.blocks.add(block);
                     }
                 }
             }
@@ -353,9 +364,9 @@
                 player.filters = undefined;
 
                 if (collidingBlock) {
+                    collidingBlock.killedBy = player;
                     collidingBlock.kill(); // Note that if both players hit the same block, then it will be killed twice
                     player.direction = GameState.DIRECTION.none;
-                    this.soundHitBlock.play();
                 }
 
                 // This may have been set by the other player
