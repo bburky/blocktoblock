@@ -21,12 +21,13 @@
     }
 
     BlockToBlock.Player = function (gameState, x, y, spriteKey) {
+        Phaser.Sprite.call(this, gameState.game, x + BlockToBlock.GameState.BLOCK_SIZE / 2, y + BlockToBlock.GameState.BLOCK_SIZE / 2, spriteKey);
+
         this.gameState = gameState;
         this.game = this.gameState.game;
 
-        Phaser.Sprite.call(this, this.game, x, y, spriteKey);
+        this.anchor.setTo(0.5, 0.5);
 
-        // TODO: use .anchor.setTo(0.5, 0.5) instead
         this.crop = new Phaser.Rectangle(-5, -5, this.width + 5, this.height + 5);
 
         // Attach the onOutOfBounds signal to onOutOfBounds from GameState

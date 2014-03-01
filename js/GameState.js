@@ -43,7 +43,6 @@
     GameState.STATE = 'game';
 
     GameState.BLOCK_SIZE = 45;
-    GameState.BORDER_WIDTH = 10;
     GameState.PLAYER_SPEED = GameState.BLOCK_SIZE * 2.25;
     GameState.DIRECTION = {
         none: 0,
@@ -128,16 +127,16 @@
 
             this.player1 = new BlockToBlock.Player(
                 this,
-                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][0] - GameState.BORDER_WIDTH,
-                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][1] - GameState.BORDER_WIDTH,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][0],
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[0][1],
                 'player-1'
             );
             this.players.add(this.player1);
 
             this.player2 = new BlockToBlock.Player(
                 this,
-                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][0] - GameState.BORDER_WIDTH,
-                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][1] - GameState.BORDER_WIDTH,
+                offset.x + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][0],
+                offset.y + GameState.BLOCK_SIZE * BlockToBlock.levels[GameState.level].startingPositions[1][1],
                 'player-2'
             );
             this.players.add(this.player2);
@@ -342,7 +341,7 @@
             for (i = 0; i < this.blocks.length; i++) {
                 var block = this.blocks.getAt(i);
                 if (block.alive) {
-                    if (block.x === point.x + GameState.BORDER_WIDTH && block.y === point.y + GameState.BORDER_WIDTH) {
+                    if (block.x === point.x && block.y === point.y) {
                         collidingBlock = block;
                         break;
                     }

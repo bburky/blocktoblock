@@ -21,7 +21,9 @@
     }
 
     BlockToBlock.Block = function (gameState, x, y, spriteKey, killSound) {
-        Phaser.Sprite.call(this, gameState.game, x, y, spriteKey);
+        Phaser.Sprite.call(this, gameState.game, x + BlockToBlock.GameState.BLOCK_SIZE / 2, y + BlockToBlock.GameState.BLOCK_SIZE / 2, spriteKey);
+
+        this.anchor.setTo(0.5, 0.5);
 
         this.gameState = gameState;
         this.game = this.gameState.game;
@@ -34,7 +36,6 @@
         this.events.onKilled.add(function () {
             this.killSound.play();
         }, this);
-
     };
 
     // BlockToBlock.Player extends Phaser.Sprite
@@ -59,8 +60,14 @@
 
         this.bounceDirection = bounceDirection;
 
-        // TODO: need to do anchor.setTo() things first
-        //this.angle = 90;
+        // Direction is up initially
+        if (this.bounceDirection === BlockToBlock.GameState.DIRECTION.right) {
+            this.angle = 90;
+        } else if (this.bounceDirection === BlockToBlock.GameState.DIRECTION.down) {
+            this.angle = 180;
+        } else if (this.bounceDirection === BlockToBlock.GameState.DIRECTION.left) {
+            this.angle = -90;
+        }
 
         this.events.onKilled.add(function () {
             this.killedBy.direction = this.bounceDirection;
