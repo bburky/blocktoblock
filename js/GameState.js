@@ -32,8 +32,6 @@
 
         this.player1 = null;
         this.player2 = null;
-
-        this.collidingPlayer = null;
     };
 
     // Shortcut
@@ -62,8 +60,6 @@
     GameState.prototype = {
 
         preload: function () {
-            var i;
-
             this.game.load.script('filterX', 'js/BlurX.js');
             this.game.load.script('filterY', 'js/BlurY.js');
 
@@ -79,7 +75,7 @@
             this.game.load.audio('hit-block', ['snd/ToneWobble.mp3', 'snd/ToneWobble.ogg']);
             this.game.load.audio('hit-player', ['snd/Game-Shot.mp3', 'snd/Game-Shot.ogg']);
 
-            for (i = 0; i < BlockToBlock.levels.length; i++) {
+            for (var i = 0; i < BlockToBlock.levels.length; i++) {
                 this.game.load.image(
                     BlockToBlock.levels[i].backgroundImgSrc,
                     BlockToBlock.levels[i].backgroundImgSrc
@@ -160,8 +156,8 @@
                             this.soundHitBlock
                         );
                         this.blocks.add(block);
-                    // TODO: make better
                     } else if (BlockToBlock.levels[GameState.level].board[i][j] === 3) {
+                        // TODO: make better
                         block = new BlockToBlock.BounceBlock(
                             this,
                             offset.x + GameState.BLOCK_SIZE * j,
@@ -175,15 +171,13 @@
                 }
             }
 
-            this.collidingPlayer = null;
-
             // FIXME: These aren't cleared when starting the state?
             this.game.input.keyboard.callbackContext = null;
             this.game.input.keyboard.onUpCallback = null;
         },
 
         update: function () {
-            var i, newPosition, text, style, t;
+            var text, style, t;
 
             if (!this.levelComplete) {
 
@@ -240,31 +234,8 @@
                 }
 
 
-                for (i = 0; i < this.players.length; i++) {
-                    var player = this.players.getAt(i);
-                    if (!player.moving) {
-                        switch (player.direction) {
-                        case GameState.DIRECTION.up:
-                            newPosition = new Phaser.Point(player.x, player.y - GameState.BLOCK_SIZE);
-                            this.goToPoint(player, newPosition);
-                            break;
-
-                        case GameState.DIRECTION.down:
-                            newPosition = new Phaser.Point(player.x, player.y + GameState.BLOCK_SIZE);
-                            this.goToPoint(player, newPosition);
-                            break;
-
-                        case GameState.DIRECTION.left:
-                            newPosition = new Phaser.Point(player.x - GameState.BLOCK_SIZE, player.y);
-                            this.goToPoint(player, newPosition);
-                            break;
-
-                        case GameState.DIRECTION.right:
-                            newPosition = new Phaser.Point(player.x + GameState.BLOCK_SIZE, player.y);
-                            this.goToPoint(player, newPosition);
-                            break;
-                        }
-                    }
+                for (var i = 0; i < this.players.length; i++) {
+                    this.updatePlayer(this.players.getAt(i));
                 }
 
                 if (this.countLivingGoalBlocks() === 0) {
@@ -334,15 +305,37 @@
             }
         },
 
-        goToPoint: function (player, point) {
-            // using global collidingPlayer
-            var i, collidingBlock;
+        updatePlayer: function (player) {
+            var i;
+
+            if (player.moving || player.direction === GameState.DIRECTION.none) {
+                // Don't need to update already moving or stationary players
+                return;
+            }
+
+            switch (player.direction) {
+            case GameState.DIRECTION.up:
+                player.destination = new Phaser.Point(player.x, player.y - GameState.BLOCK_SIZE);
+                break;
+
+            case GameState.DIRECTION.down:
+                player.destination = new Phaser.Point(player.x, player.y + GameState.BLOCK_SIZE);
+                break;
+
+            case GameState.DIRECTION.left:
+                player.destination = new Phaser.Point(player.x - GameState.BLOCK_SIZE, player.y);
+                break;
+
+            case GameState.DIRECTION.right:
+                player.destination = new Phaser.Point(player.x + GameState.BLOCK_SIZE, player.y);
+                break;
+            }
 
             for (i = 0; i < this.blocks.length; i++) {
                 var block = this.blocks.getAt(i);
                 if (block.alive) {
-                    if (block.x === point.x && block.y === point.y) {
-                        collidingBlock = block;
+                    if (block.x === player.destination.x && block.y === player.destination.y) {
+                        var collidingBlock = block;
                         break;
                     }
                 }
@@ -351,15 +344,15 @@
             for (i = 0; i < this.players.length; i++) {
                 var otherPlayer = this.players.getAt(i);
                 if (otherPlayer !== player) {
-                    if (otherPlayer.direction !== player.direction && otherPlayer.destination.equals(point)) {
-                        this.collidingPlayer = otherPlayer;
+                    if (otherPlayer.direction !== player.direction && otherPlayer.destination.equals(player.destination)) {
+                        var collidingPlayer = otherPlayer;
+                        collidingPlayer.direction = GameState.DIRECTION.none;
                         break;
                     }
                 }
             }
 
             player.moving = true;
-            player.destination = point;
             if (this.game.renderType === Phaser.WEBGL) {
                 if (player.direction === GameState.DIRECTION.up || player.direction === GameState.DIRECTION.down) {
                     player.filters = [this.blurY];
@@ -369,12 +362,19 @@
             }
             var tween = this.game.add.tween(player);
             tween.to({
-                x: point.x,
-                y: point.y
+                x: player.destination.x,
+                y: player.destination.y
             }, GameState.PLAYER_SPEED);
             tween.onComplete.add(function () {
                 player.moving = false;
                 player.filters = null;
+
+                // This may have been set by the other player
+                if (collidingPlayer) {
+                    player.filters = null; // Potentially a block's onKilled set this
+                    player.direction = GameState.DIRECTION.none;
+                    this.soundHitPlayer.play();
+                }
 
                 if (collidingBlock) {
                     player.direction = GameState.DIRECTION.none;
@@ -382,14 +382,7 @@
                     collidingBlock.kill(); // Note that if both players hit the same block, then it will be killed twice
                 }
 
-                // This may have been set by the other player
-                if (this.collidingPlayer) {
-                    player.direction = GameState.DIRECTION.none;
-                    if (this.collidingPlayer !== player) {
-                        this.collidingPlayer = null;
-                        this.soundHitPlayer.play();
-                    }
-                }
+                tween = null;
             }, this);
             tween.start();
         },

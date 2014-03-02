@@ -71,6 +71,7 @@
 
         this.events.onKilled.add(function () {
             this.killedBy.direction = this.bounceDirection;
+            this.gameState.updatePlayer(this.killedBy); // Trigger an immediate player update to avoid races
             if (this.game.renderType === Phaser.WEBGL) {
                 if (this.bounceDirection === BlockToBlock.GameState.DIRECTION.up || this.bounceDirection === BlockToBlock.GameState.DIRECTION.down) {
                     this.killedBy.filters = [this.gameState.blurY];
