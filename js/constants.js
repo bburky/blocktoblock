@@ -11,8 +11,10 @@ var BLOCK_HEIGHT = MAX_BLOCK_HEIGHT;
 var BLOCK_IMG_SRCS = ['img/block1.png', 'img/block5.png', 'img/block7.png'];
 var BLOCK_GOAL_IMG_SRC = 'img/blockGoal.png';
 
-var SND_HIT_SRC = 'snd/ToneWobble.mp3|snd/ToneWobble.ogg';
-var SND_HIT_PLAYER_SRC = 'snd/Game-Shot.mp3|snd/Game-Shot.ogg';
+var SND_HIT = {id:'hit', src:'snd/ToneWobble.ogg'};
+var SND_HIT_ID = 'hit';
+var SND_HIT_PLAYER = {id:'hit_player', src:'snd/Game-Shot.ogg'};
+var SND_HIT_PLAYER_ID = 'hit_player';
 
 var TEXT_FONT = '50pt Helvetica, Arial';
 var SMALL_TEXT_FONT = '12pt Helvetica, Arial';

@@ -444,9 +444,10 @@ function loadAssets(callback) {
   }
 
   // Loud sound effects
-  createjs.Sound.addEventListener("loadComplete", createjs.proxy(checkAssetsLoaded,this));
-  createjs.Sound.registerSound(SND_HIT_SRC);
-  createjs.Sound.registerSound(SND_HIT_PLAYER_SRC);
+  createjs.Sound.addEventListener("fileload", createjs.proxy(checkAssetsLoaded,this));
+  createjs.Sound.alternateExtensions = ['mp3'];
+  createjs.Sound.registerSound(SND_HIT);
+  createjs.Sound.registerSound(SND_HIT_PLAYER);
 }
 
 // Initialization and game loop
@@ -459,8 +460,8 @@ function initGame() {
 
   // Instantiate sounds
   createjs.Sound.initializeDefaultPlugins();
-  hitSnd = createjs.Sound.createInstance(SND_HIT_SRC);
-  hitPlayerSnd = createjs.Sound.createInstance(SND_HIT_PLAYER_SRC);
+  hitSnd = createjs.Sound.createInstance(SND_HIT_ID);
+  hitPlayerSnd = createjs.Sound.createInstance(SND_HIT_PLAYER_ID);
 
   // Setup code for timers
   // init with fake values
