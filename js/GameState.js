@@ -240,6 +240,7 @@
 
                 if (this.countLivingGoalBlocks() === 0) {
                     this.levelComplete = true;
+                    this.game.tweens.removeAll();
 
                     text = "Level Complete";
                     if (GameState.level === BlockToBlock.levels.length - 1) {
@@ -390,6 +391,11 @@
         outOfBounds: function () {
             var text, style, t;
 
+            if (this.levelComplete) {
+                // The player managed to lose during level complete, ignore the game over
+                return;
+            }
+
             this.levelComplete = true;
             this.game.tweens.removeAll();
 
@@ -408,7 +414,6 @@
                 this.game.stage.backgroundColor = color;
             }, this);
             tween.start();
-
 
             text = "Game Over";
             style = {
